@@ -12,7 +12,6 @@ library(IFAA)
 ## ----eval=FALSE---------------------------------------------------------------
 #  require(devtools)
 #  devtools::install_github("gitlzg/IFAA")
-#  library(IFAA)
 
 ## -----------------------------------------------------------------------------
 library(IFAA)
@@ -31,10 +30,10 @@ results <- IFAA(MicrobData = dataM,
                 linkIDname = "id",
                 testCov = c("v1", "v2"),
                 ctrlCov = c("v3"),
-                nRef = 4,
-                nPermu = 4,
-                fwerRate = 0.25,
-                bootB = 5)
+                nRef = 3,
+                nPermu = 3,
+                paraJobs = 2,
+                fwerRate = 0.25)
 
 ## ----eval=T-------------------------------------------------------------------
 results$analysisResults$estByCovList
@@ -56,7 +55,8 @@ results <- MZILN(MicrobData = dataM,
                 CovData = dataC,
                 linkIDname = "id",
                 allCov = c("v1","v2","v3"),
-                refTaxa=c("rawCount11")
+                refTaxa=c("rawCount11"),
+                paraJobs = 2
                 )
 
 ## ----eval=T-------------------------------------------------------------------
