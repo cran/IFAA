@@ -1,6 +1,6 @@
 Package: IFAA
 Title: Robust Analysis for Absolute Abundance in Microbiome
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: person(given = "Zhigang",
            family = "Li",
            role = c("aut", "cre"),
@@ -22,8 +22,8 @@ RdMacros: mathjaxr
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2021-01-06 15:53:42 UTC; ss
+Packaged: 2021-07-20 02:11:45 UTC; ss
 Author: Zhigang Li [aut, cre]
 Maintainer: Zhigang Li <zhigang.li@ufl.edu>
 Repository: CRAN
-Date/Publication: 2021-01-06 17:10:02 UTC
+Date/Publication: 2021-07-20 16:00:10 UTC
