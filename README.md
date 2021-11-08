@@ -24,15 +24,15 @@ results <- IFAA(MicrobData = dataM,
                 linkIDname = "id",
                 testCov = c("v1", "v2"),
                 ctrlCov = c("v3"),
-                nRef = 4,
-                nPermu = 4,
-                bootB = 5)
+                nRef = 3,
+                paraJobs = 2,
+                fdrRate = 0.25)
 ```
 
 
 Once the analysis is done, you can extract the regression coefficients along with 95% confidence intervals using this command:
 ```r
-results$analysisResults$estByCovList
+results$analysisResults$sig_list_each_mean
 ```
 
 The function can also take csv or tsv data files directly by reading the file directory paths using the first two arguments:
@@ -52,15 +52,16 @@ results=IFAA(MicrobData=M,CovData=C,...)
 Use sample datasets to run `MZILN()` function.
 ```r
 results <- MZILN(MicrobData = dataM,
-                 CovData = dataC,
+                CovData = dataC,
                  linkIDname = "id",
-                 allCov = c("v1","v2","v3"),
-                 refTaxa=c("rawCount11")
-                 )
+                 allCov=c("v1","v2","v3"),
+                 targetTaxa = "rawCount6",
+                 refTaxa=c("rawCount11"),
+                 paraJobs=2)
 ```
 Regression results including confidence intervals can be extracted in the following way:
 ```r
-results$analysisResults$estByRefTaxaList$rawCount11$estByCovList
+results$analysisResults$targettaxa_result_list
 ```
 
 ## References 

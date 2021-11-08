@@ -31,12 +31,11 @@ results <- IFAA(MicrobData = dataM,
                 testCov = c("v1", "v2"),
                 ctrlCov = c("v3"),
                 nRef = 3,
-                nPermu = 3,
                 paraJobs = 2,
-                fwerRate = 0.25)
+                fdrRate = 0.25)
 
 ## ----eval=T-------------------------------------------------------------------
-results$analysisResults$estByCovList
+results$analysisResults$sig_list_each_mean
 
 ## ----eval=T-------------------------------------------------------------------
 results$covariatesData
@@ -53,14 +52,14 @@ dataC[1:5, ]
 ## ---- eval=T------------------------------------------------------------------
 results <- MZILN(MicrobData = dataM,
                 CovData = dataC,
-                linkIDname = "id",
-                allCov = c("v1","v2","v3"),
-                refTaxa=c("rawCount11"),
-                paraJobs = 2
-                )
+                 linkIDname = "id",
+                 allCov=c("v1","v2","v3"),
+                 targetTaxa = "rawCount6",
+                 refTaxa=c("rawCount11"),
+                 paraJobs=2)
 
 ## ----eval=T-------------------------------------------------------------------
-results$analysisResults$estByRefTaxaList$rawCount11$estByCovList
+results$analysisResults$targettaxa_result_list
 
 ## ----eval=T-------------------------------------------------------------------
 results$covariatesData

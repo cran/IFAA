@@ -13,18 +13,16 @@ IFAA(
   testMany = TRUE,
   ctrlMany = FALSE,
   nRef = 40,
-  nRefMaxForEsti = 1,
-  nPermu = 40,
-  x1permut = TRUE,
+  nRefMaxForEsti = 2,
   refTaxa = NULL,
-  reguMethod = c("mcp"),
-  fwerRate = 0.25,
+  adjust_method = "BY",
+  fdrRate = 0.25,
   paraJobs = NULL,
   bootB = 500,
-  bootLassoAlpha = 0.05,
   standardize = FALSE,
   sequentialRun = FALSE,
   refReadsThresh = 0.2,
+  taxkeepThresh = 0,
   SDThresh = 0.05,
   SDquantilThresh = 0,
   balanceCut = 0.2,
@@ -56,27 +54,23 @@ directory path. For example, \code{CovData = "C://...//covariatesData.tsv"}.}
 
 \item{nRefMaxForEsti}{The maximum number of reference taxa used in phase 2. The default is \code{1}.}
 
-\item{nPermu}{The number of permutation used in phase 1. Default number is \code{40}.}
-
-\item{x1permut}{This takes a logical value \code{TRUE} or \code{FALSE}. If true, it will permute the variables in testCov. If false, it will use residual-permutation proposed by Freedman and Lane (1983). Default is 'TRUE'.}
-
 \item{refTaxa}{A vector of taxa or OTU or ASV names. These are reference taxa specified by the user to be used in phase 1. If the number of reference taxa is less than 'nRef', the algorithm will randomly pick extra reference taxa to make up 'nRef'. The default is \code{NULL} since the algorithm will pick reference taxa randomly.}
 
-\item{reguMethod}{regularization approach used in phase 1 of the algorithm. Default is \code{"mcp"}. Other methods are under development.}
+\item{adjust_method}{The adjusting method used for p value adjustment. Same as p.adjust function in R.}
 
-\item{fwerRate}{The family wise error rate for identifying taxa/OTU/ASV associated with \code{testCov} in phase 1. Default is \code{0.25}.}
+\item{fdrRate}{The false discovery rate for identifying taxa/OTU/ASV associated with \code{testCov}. Default is \code{0.25}.}
 
 \item{paraJobs}{If \code{sequentialRun} is \code{FALSE}, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as \code{NULL}, it will automatically detect the cores to decide the number of parallel jobs. Default is \code{NULL}. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.}
 
 \item{bootB}{Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is \code{500}.}
-
-\item{bootLassoAlpha}{The significance level in phase 2. Default is \code{0.05}.}
 
 \item{standardize}{This takes a logical value \code{TRUE} or \code{FALSE}. If \code{TRUE}, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is \code{FALSE}.}
 
 \item{sequentialRun}{This takes a logical value \code{TRUE} or \code{FALSE}. Default is \code{FALSE}. This argument could be useful for debug.}
 
 \item{refReadsThresh}{The threshold of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is \code{0.2} which means at least 20\% non-zero sequencing reads.}
+
+\item{taxkeepThresh}{The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis.}
 
 \item{SDThresh}{The threshold of standard deviations of sequencing reads for choosing the reference taxon in phase 2. The default is \code{0.5} which means the standard deviation of sequencing reads should be at least \code{0.5}.}
 
@@ -89,7 +83,7 @@ directory path. For example, \code{CovData = "C://...//covariatesData.tsv"}.}
 \value{
 A list containing the estimation results.
 \itemize{
-\item \code{analysisResults$estByCovList}: A list containing estimating results for all the variables in \code{testCov}. See details.
+\item \code{analysisResults$sig_list_each_mean}: A list containing estimating results for all the variables in \code{testCov}. See details.
 \item \code{covariatesData}: A dataset containing covariates and confounders used in the analyses.
 }
 }
@@ -133,9 +127,8 @@ results <- IFAA(MicrobData = dataM,
                 linkIDname = "id",
                 testCov = c("v1", "v2"),
                 ctrlCov = c("v3"), nRef = 3,
-                nPermu = 3,
                 paraJobs = 2,
-                fwerRate = 0.25,
+                fdrRate = 0.25,
                 bootB = 5)
 
 }

@@ -9,11 +9,14 @@ MZILN(
   CovData,
   linkIDname,
   allCov = NULL,
+  targetTaxa = NULL,
   refTaxa,
-  reguMethod = c("mcp"),
+  adjust_method = "BY",
+  fdrRate = 0.2,
   paraJobs = NULL,
   bootB = 500,
   bootLassoAlpha = 0.05,
+  taxkeepThresh = 0,
   standardize = FALSE,
   sequentialRun = TRUE,
   seed = 1
@@ -34,15 +37,21 @@ take directory path. For example, \code{CovData="C://...//covariatesData.tsv"}.}
 
 \item{allCov}{All covariates of interest (including confounders) for estimating and testing their associations with microbiome. Default is 'NULL' meaning that all covariates in covData are of interest.}
 
+\item{targetTaxa}{The taxa that should be used as numerator. Default is NULL.}
+
 \item{refTaxa}{Reference taxa specified by the user and will be used as the reference taxa.}
 
-\item{reguMethod}{regularization approach used in phase 1 of the algorithm. Default is \code{"mcp"}. Other methods are under development.}
+\item{adjust_method}{The adjusting method used for p value adjustment. Same as p.adjust function in R.}
+
+\item{fdrRate}{The false discovery rate for identifying taxa/OTU/ASV associated with \code{allCov}. Default is \code{0.25}.}
 
 \item{paraJobs}{If \code{sequentialRun} is \code{FALSE}, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as \code{NULL}, it will automatically detect the cores to decide the number of parallel jobs. Default is \code{NULL}. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.}
 
 \item{bootB}{Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is \code{500}.}
 
 \item{bootLassoAlpha}{The significance level in phase 2. Default is \code{0.05}.}
+
+\item{taxkeepThresh}{The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis.}
 
 \item{standardize}{This takes a logical value \code{TRUE} or \code{FALSE}. If \code{TRUE}, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is \code{FALSE}.}
 
@@ -53,7 +62,8 @@ take directory path. For example, \code{CovData="C://...//covariatesData.tsv"}.}
 \value{
 A list containing the estimation results.
 \itemize{
-\item \code{analysisResults$estByRefTaxaList}: A list containing estimating results for all reference taxa and all the variables in 'allCov'. See details.
+\item \code{analysisResults$all_cov_sig_list}: A list containing estimating results for all significant taxa.
+\item \code{analysisResults$targettaxa_result_list}: A list containing estimating results for targetTaxa. Only available when targetTaxa is non-empty.
 \item \code{covariatesData}: A dataset containing all covariates used in the analyses.
 }
 }
@@ -87,6 +97,7 @@ results <- MZILN(MicrobData = dataM,
                 CovData = dataC,
                 linkIDname = "id",
                 allCov=c("v1","v2","v3"),
+                targetTaxa = "rawCount6",
                 refTaxa=c("rawCount11"),
                 paraJobs=2)
 

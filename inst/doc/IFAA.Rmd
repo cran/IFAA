@@ -1,8 +1,6 @@
 ---
-title: "Introduction to IFAA"
-#output: rmarkdown::html_vignette
-output: rmarkdown::pdf_document
-
+title: "IFAA"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{IFAA}
   %\VignetteEngine{knitr::rmarkdown}
@@ -73,15 +71,9 @@ The `IFAA()` function is the main function. The User Inputs are:
 
 - `nRef`: The number of randomly picked reference taxa used in phase 1. Default number is `40`. 
 
-- `nPermu`: The number of permutation used in phase 1. Default number is `40`. 
-
-- `x1permut`: This takes a logical value `TRUE` or `FALSE`. If true, it will permute the variables in testCov. If false, it will use residual-permutation proposed by Freedman and Lane (1983). Default is "TRUE".
-
 - `refTaxa`: A vector of taxa names. These are reference taxa specified by the user to be used in phase 1. If the number of reference taxa is less than 'nRef', the algorithm will randomly pick extra reference taxa to make up 'nRef'. The default is `NULL` since the algorithm will pick reference taxa randomly. 
 
-- `reguMethod`: regularization approach used in phase 1 of the algorithm. Default is `"mcp"`. Other methods are under development.
-
-- `fwerRate`: The family wise error rate for identifying taxa/OTU/ASV associated with `testCov` in phase 1. Default is `0.25`.
+- `fdrRate`: The false discovery rate for identifying taxa/OTU/ASV associated with `testCov` in phase 1. Default is `0.25`.
 
 - `sequentialRun`: This takes a logical value `TRUE` or `FALSE`. Default is `FALSE`. This argument could be useful for debug.
 
@@ -93,8 +85,6 @@ The `IFAA()` function is the main function. The User Inputs are:
 
 - `bootB`: Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is `500`.
 
-- `bootLassoAlpha`: The significance level in phase 2. Default is `0.05`.
-
 - `refReadsThresh`: The threshold of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is `0.2` which means at least 20% non-zero sequencing reads.
 
 - `SDThresh`: The threshold of standard deviations of sequencing reads for choosing the reference taxon in phase 2. The default is `0.5` which means the standard deviation of sequencing reads should be at least `0.5`.
@@ -105,7 +95,7 @@ The `IFAA()` function is the main function. The User Inputs are:
 
 The output of `IFAA()` function is a list. The estimation results can extracted as the following: 
 
-- `analysisResults$estByCovList`: A list containing estimating results for all the variables in `testCov`. See details. 
+- `analysisResults$sig_list_each_mean`: A list containing estimating results for all the variables in `testCov`. See details. 
 
 The covariates data including `testCov` and `ctrlCov` can be extracted in the output:
 
@@ -141,23 +131,22 @@ results <- IFAA(MicrobData = dataM,
                 testCov = c("v1", "v2"),
                 ctrlCov = c("v3"),
                 nRef = 3,
-                nPermu = 3,
                 paraJobs = 2,
-                fwerRate = 0.25)
+                fdrRate = 0.25)
 ```
 
 
 In this example, we are only interested in testing the association with `"v1"` and `"v2"` which is why `testCov=c("v1,"v2")`. The variable `"v3"` is adjusted as a potential confounder in the analyses. For the sake of speed in this hypothetical example, we set small numbers for `nRef=4`, `nPermu=4` and `bootB=5`. These are just for illustration purpose here and are too small for a formal analysis to generate valid results. 
 
-The final analysis results are stored in the list `analysisResults$estByCovList`: 
+The final analysis results are stored in the list `analysisResults$sig_list_each_mean`: 
 ```{r,eval=T}
-results$analysisResults$estByCovList
+results$analysisResults$sig_list_each_mean
 ```
-The results found the two taxa `"rawCount29"` and `"rawCount42"` associated with `"v2"`. The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to $\beta^k$ in the model equation. 
+The results found the two taxa `"rawCount23"` and `"rawCount32"` associated with `"v2"`. The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to $\beta^k$ in the model equation. 
 
 The interpretation is that 
 
-- Every unit increase in `"v2"` is associated with approximately 5.9% increase in the absolute abundance of `"rawCount29"` and approximately 4.1% increase in the absolute abundance of `"rawCount42"` in the entire gut ecosystem. 
+- Every unit increase in `"v2"` is associated with approximately 7.9% increase in the log of absolute abundance of `"rawCount23"` and approximately 8.1% increase in the log of absolute abundance of `"rawCount33"` in the entire gut ecosystem. 
 
 - There were no taxa associated with `"v1"` in the analysis. 
 
@@ -167,9 +156,7 @@ All the analyzed covariates including `testCov` and `ctrlCov` are stored in the 
 results$covariatesData
 ```
 
-## MZILN() function
-
-The IFAA package also offers the MZILN() function to implement the Multivariate Zero-Inflated Logistic Normal regression model for analyzing microbiome data. The regression model for `MZILN()` can be expressed as follows: 
+The IFAA package also implement the Multivariate Zero-Inflated Logistic Normal (MZILN) regression model for analyzing microbiome data. The regression model can be expressed as follows: 
 $$
 \log\bigg(\frac{\mathcal{Y}_i^k}{\mathcal{Y}_i^{K+1}}\bigg)|\mathcal{Y}_i^k>0,\mathcal{Y}_i^{K+1}>0=\alpha^{0k}+\mathcal{X}_i^T\alpha^k+\epsilon_i^k,\hspace{0.2cm}k=1,...,K,
 $$
@@ -181,7 +168,7 @@ where
 
 - $\mathcal{X}_i$ is the covariate matrix for all covariates including confounders.
 
-- $\alpha^k$ is the regression coefficients that will be estimated and tested by the `MZILN()` function. 
+- $\alpha^k$ is the regression coefficients that will be estimated and tested. 
 
 ## Input and Output for MZILN() function
 
@@ -191,29 +178,24 @@ The `MZILN()` function is to implement the Multivariate Zero-Inflated Logistic N
 
 - `CovData`: Covariates data matrix containing covariates and confounders with each row per sample and each column per variable. It should also contain an `"id"` variable to correspond to the `"id"` variable in the microbiome data: `MicrobData`. This argument can also take file directory path. For example, CovData="C://...//covariatesData.tsv".
 
-- `linkIDname`: Variable name of the `"id"` variable in both `MicrobData` and `CovData`. The two data sets will be merged by this `"id"` variable.
-
-- `allCov`: All covariates of interest (including confounders) for estimating and testing their associations with microbiome. Default is all covariates in covData are of interest.
-
-- `refTaxa`: A vector of taxa names (or one taxon name) specified by the user and will be used as the reference taxa. 
-
-- `reguMethod`: regularization approach used in phase 1 of the algorithm. Default is `"mcp"`. Other methods are under development.
-
-- `sequentialRun`: This takes a logical value `TRUE` or `FALSE`. Default is `TRUE` for the MZILN function since typically users should specify one or just a few reference taxa in `refTaxa`.
-
-- `paraJobs`: If `sequentialRun` is `FALSE`, this specifies the number of parallel jobs that will be registered to run the algorithm.  If specified as `NULL`, it will automatically detect the cores to decide the number of parallel jobs. Default is `NULL`. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.
-
-- `standardize`: This takes a logical value `TRUE` or `FALSE`. If `TRUE`, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is `FALSE`.
-
-- `bootB`: Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is `500`.
-
-- `bootLassoAlpha`: The significance level in phase 2. Default is `0.05`.
-
-- `seed`: Random seed for reproducibility. Default is `1`.
+- `linkIDname` Variable name of the `"id"` variable in both `MicrobData` and `CovData`. The two data sets will be merged by this `"id"` variable.
+- `allCov` All covariates of interest (including confounders) for estimating and testing their associations with microbiome. Default is 'NULL' meaning that all covariates in covData are of interest.
+- `targetTaxa` The taxa that should be used as numerator. Default is NULL.
+- `refTaxa` Reference taxa specified by the user and will be used as the reference taxa.
+- `adjust_method` The adjusting method used for p value adjustment. Same as p.adjust function in R.
+- `fdrRate` The false discovery rate for identifying taxa/OTU/ASV associated with `allCov`. Default is `0.25`.
+- `sequentialRun` This takes a logical value `TRUE` or `FALSE`. Default is `TRUE` since there is only 1 reference taxon.
+- `paraJobs` If `sequentialRun` is `FALSE`, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as `NULL`, it will automatically detect the cores to decide the number of parallel jobs. Default is `NULL`. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.
+- `standardize` This takes a logical value `TRUE` or `FALSE`. If `TRUE`, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is `FALSE`.
+- `bootB` Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is `500`.
+- `bootLassoAlpha` The significance level in phase 2. Default is `0.05`.
+- `taxkeepThresh` The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis.
+- `seed` Random seed for reproducibility. Default is `1`.
 
 The output of `MZILN()` function is a list. The estimation results can extracted as the following: 
 
-- `analysisResults$estByCovList`: A list containing estimating results for all reference taxa and all the variables in `allCov`.
+- `analysisResults$all_cov_sig_list`: A list containing estimating results for all significant taxa.
+- `analysisResults$targettaxa_result_list`: A list containing estimating results for targetTaxa. Only available when targetTaxa is non-empty.
 
 All covariates data can be extracted:
 
@@ -243,30 +225,32 @@ Next we analyze the data to test the association between microbiome and all the 
 ```{r, eval=T}
 results <- MZILN(MicrobData = dataM,
                 CovData = dataC,
-                linkIDname = "id",
-                allCov = c("v1","v2","v3"),
-                refTaxa=c("rawCount11"),
-                paraJobs = 2
-                )
+                 linkIDname = "id",
+                 allCov=c("v1","v2","v3"),
+                 targetTaxa = "rawCount6",
+                 refTaxa=c("rawCount11"),
+                 paraJobs=2)
 ```
 
 
-In this example, we are only interested in testing the associations with `"v1"`, `"v2"` and '"v3"' which is why `allCov=c("v1,"v2","v3")`. 
+In this example, we are only interested in testing the associations with `"v1"`, `"v2"` and `"v3"` which is why `allCov=c("v1,"v2","v3")`. 
+The reference taxa is set to be `"rawCount11"`, and the taxa we are interested in is `"rawCount6"`, so that `refTaxa=c("rawCount11")` and `targetTaxa = "rawCount6"`. 
 
-The final analysis results are stored in the list `results$analysisResults$estByRefTaxaList$rawCount11$estByCovList`: 
+The final analysis results are stored in the list
+`results$analysisResults$targettaxa_result_list`: 
 ```{r,eval=T}
-results$analysisResults$estByRefTaxaList$rawCount11$estByCovList
+results$analysisResults$targettaxa_result_list
 ```
-The results found the two taxa `"rawCount29"` and `"rawCount42"` associated with `"v2"`, and a bunch of other taxa assoicated with "'v3'". The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to $\alpha^k$ in the model equation, and can be interpreted as the associations between the covariates and log-ratio of the significant taxa over the reference taxon. 
+The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to $\alpha^k$ in the model equation, and can be interpreted as the associations between the covariates and log-ratio of the significant taxa over the reference taxon. 
 
 The interpretation is that 
 
-- Every unit increase in `"v2"` is associated with approximately 3.6% increase in the abundance ratio of `"rawCount29"` over '"rawCount11"' and approximately 2.6% increase in the abundance ratio of `"rawCount42"` over '"rawCount11"' in the entire gut ecosystem. The interpretation is similar for the associations with '"v3"'.
+- Every unit increase in `"v1"` is associated with approximately 21.3% increase in the abundance ratio of `"rawCount6"` over `"rawCount11"`;every unit increase in `"v2"` is associated with approximately 2.0% increase in the abundance ratio of `"rawCount6"` over `"rawCount11"`;every unit increase in `"v3"` is associated with approximately 0.3% decrease in the abundance ratio of `"rawCount6"` over `"rawCount11"`.
 
-- There were no taxa associated with `"v1"` in the analysis. 
 
 All the analyzed covariates are stored in the object: `covariatesData`: 
 
 ```{r,eval=T}
 results$covariatesData
 ```
+
