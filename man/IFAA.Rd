@@ -83,7 +83,8 @@ directory path. For example, \code{CovData = "C://...//covariatesData.tsv"}.}
 \value{
 A list containing the estimation results.
 \itemize{
-\item \code{analysisResults$sig_list_each_mean}: A list containing estimating results for all the variables in \code{testCov}. See details.
+\item \code{analysisResults$sig_results}: A list containing estimating results for all significant taxon for the variables in \code{testCov}.
+\item \code{analysisResults$full_results}: A list containing estimating results for taxon. NA denotes unestimable.
 \item \code{covariatesData}: A dataset containing covariates and confounders used in the analyses.
 }
 }
@@ -137,9 +138,9 @@ results <- IFAA(MicrobData = dataM,
 
 }
 \references{
-Li et al.(In press) IFAA: Robust association identification and Inference For Absolute Abundance in microbiome analyses. Journal of the American Statistical Association
+Li et al.(2021) IFAA: Robust association identification and Inference For Absolute Abundance in microbiome analyses. Journal of the American Statistical Association
 
 Zhang CH (2010) Nearly unbiased variable selection under minimax concave penalty. Annals of Statistics. 38(2):894-942.
 
-Freedman and Lane (1983) A non-stochastic interpretation of reported significance levels. Journal of Business & Economic Statistics. 1(4):292-298.
+Liu et al.(2020) A bootstrap lasso + partial ridge method to construct confidence intervals for parameters in high-dimensional sparse linear models. Statistica Sinica
 }

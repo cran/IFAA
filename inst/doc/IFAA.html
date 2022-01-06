@@ -382,7 +382,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul>
 <p>The output of <code>IFAA()</code> function is a list. The estimation results can extracted as the following:</p>
 <ul>
-<li><code>analysisResults$sig_list_each_mean</code>: A list containing estimating results for all the variables in <code>testCov</code>. See details.</li>
+<li><p><code>analysisResults$sig_results</code>: A list containing estimating results for all the variables in <code>testCov</code>.</p></li>
+<li><p><code>analysisResults$full_results</code>: A list containing estimating results for taxon. NA denotes unestimable.</p></li>
 </ul>
 <p>The covariates data including <code>testCov</code> and <code>ctrlCov</code> can be extracted in the output:</p>
 <ul>
@@ -442,35 +443,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; v3</span></span>
 <span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; 0 binary covariates in the analysis</span></span>
 <span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; 54.27 percent of microbiome sequencing reads are zero</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Start Phase 1 association identification</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; start phase 1a</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 3 reference taxa in Phase 1a</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; 50 percent of phase 1a analysis has been done</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; 100 percent of phase 1a analysis has been done</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; Phase 1a done and took 0.075 minutes</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; maximum memory used after phase 1a: 6220455 Mb</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; &lt;sparse&gt;[ &lt;logic&gt; ] : .M.sub.i.logical() maybe inefficient</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; start phase 1a</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 2 reference taxa in Phase 1a</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; 100 percent of phase 1a analysis has been done</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a><span class="co">#&gt; Phase 1a done and took 0.053 minutes</span></span>
-<span id="cb4-34"><a href="#cb4-34"></a><span class="co">#&gt; maximum memory used after phase 1a: 6062956 Mb</span></span>
-<span id="cb4-35"><a href="#cb4-35"></a><span class="co">#&gt; Phase 1 Associaiton identification is done and used 0.16 minutes</span></span>
-<span id="cb4-36"><a href="#cb4-36"></a><span class="co">#&gt; Start Phase 2 parameter estimation</span></span>
-<span id="cb4-37"><a href="#cb4-37"></a><span class="co">#&gt; Final Reference Taxa are: rawCount9rawCount32</span></span>
-<span id="cb4-38"><a href="#cb4-38"></a><span class="co">#&gt; Start estimation for the 1th final reference taxon: rawCount9</span></span>
-<span id="cb4-39"><a href="#cb4-39"></a><span class="co">#&gt; Estimation done for the 1th final reference taxon: rawCount9 and it took 0.007 minutes</span></span>
-<span id="cb4-40"><a href="#cb4-40"></a><span class="co">#&gt; Start estimation for the 2th final reference taxon: rawCount32</span></span>
-<span id="cb4-41"><a href="#cb4-41"></a><span class="co">#&gt; Estimation done for the 2th final reference taxon: rawCount32 and it took 0.006 minutes</span></span>
-<span id="cb4-42"><a href="#cb4-42"></a><span class="co">#&gt; Phase 2 parameter estimation done and took 0.014 minutes.</span></span>
-<span id="cb4-43"><a href="#cb4-43"></a><span class="co">#&gt; The entire analysis took 0.17 minutes</span></span></code></pre></div>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Start Phase 1 analysis</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 3 reference taxa in Phase 1</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; 33 percent of phase 1 analysis has been done</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 2 reference taxa in Phase 1</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; 67 percent of phase 1 analysis has been done</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; Phase 1 analysis used 0.14 minutes</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; Start Phase 2 parameter estimation</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; Final Reference Taxa are: rawCount32rawCount33</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; Start estimation for the 1th final reference taxon: rawCount32</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; Estimation done for the 1th final reference taxon: rawCount32 and it took 0.007 minutes</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; Start estimation for the 2th final reference taxon: rawCount33</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="co">#&gt; Estimation done for the 2th final reference taxon: rawCount33 and it took 0.006 minutes</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co">#&gt; Phase 2 parameter estimation done and took 0.013 minutes.</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="co">#&gt; The entire analysis took 0.15 minutes</span></span></code></pre></div>
 <p>In this example, we are only interested in testing the association with <code>&quot;v1&quot;</code> and <code>&quot;v2&quot;</code> which is why <code>testCov=c(&quot;v1,&quot;v2&quot;)</code>. The variable <code>&quot;v3&quot;</code> is adjusted as a potential confounder in the analyses. For the sake of speed in this hypothetical example, we set small numbers for <code>nRef=4</code>, <code>nPermu=4</code> and <code>bootB=5</code>. These are just for illustration purpose here and are too small for a formal analysis to generate valid results.</p>
-<p>The final analysis results are stored in the list <code>analysisResults$sig_list_each_mean</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>results<span class="op">$</span>analysisResults<span class="op">$</span>sig_list_each_mean</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; $v2</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;              estimate     SE est     CI low     CI up adj p-value</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; rawCount23 0.07868766 0.03070331 0.01850918 0.1388661   0.1984626</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; rawCount33 0.08136017 0.03295359 0.01677113 0.1459492   0.1984626</span></span></code></pre></div>
+<p>The final analysis results are stored in the list <code>analysisResults$sig_results</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>results<span class="op">$</span>analysisResults<span class="op">$</span>sig_results</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; list()</span></span></code></pre></div>
 <p>The results found the two taxa <code>&quot;rawCount23&quot;</code> and <code>&quot;rawCount32&quot;</code> associated with <code>&quot;v2&quot;</code>. The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to <span class="math inline">\(\beta^k\)</span> in the model equation.</p>
 <p>The interpretation is that</p>
 <ul>
@@ -525,7 +515,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul>
 <p>The output of <code>MZILN()</code> function is a list. The estimation results can extracted as the following:</p>
 <ul>
-<li><code>analysisResults$all_cov_sig_list</code>: A list containing estimating results for all significant taxa.</li>
+<li><code>analysisResults$full_results</code>: A list containing estimating results for all significant taxa.</li>
 <li><code>analysisResults$targettaxa_result_list</code>: A list containing estimating results for targetTaxa. Only available when targetTaxa is non-empty.</li>
 </ul>
 <p>All covariates data can be extracted:</p>

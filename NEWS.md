@@ -1,3 +1,9 @@
+# IFAA 1.0.4
+
+* Removed unnecessary comments. 
+* Update find reference algorithm. 
+* make output result more user-friendly
+
 # IFAA 1.0.3
 
 * Update algorithm. 

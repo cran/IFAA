@@ -35,7 +35,7 @@ results <- IFAA(MicrobData = dataM,
                 fdrRate = 0.25)
 
 ## ----eval=T-------------------------------------------------------------------
-results$analysisResults$sig_list_each_mean
+results$analysisResults$sig_results
 
 ## ----eval=T-------------------------------------------------------------------
 results$covariatesData

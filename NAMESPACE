@@ -2,8 +2,10 @@
 
 export(IFAA)
 export(MZILN)
+import(expm)
 import(glmnet)
 import(mathjaxr)
+import(rlecuyer)
 import(stats)
 import(utils)
 importFrom(HDCI,bootLOPR)
