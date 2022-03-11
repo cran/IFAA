@@ -8,7 +8,7 @@ bootResuHDCI=function(
   originRefTaxNam,
   maxDimension=434*5*10^5,
   bootB,
-  bootLassoAlpha,
+  bootLassoAlpha=0.05,
   binPredInd,
   covsPrefix,
   Mprefix,
@@ -57,10 +57,7 @@ bootResuHDCI=function(
 
   nRuns=(ceiling(subSamplK/3))
 
-  # availCores=max(1,(availableCores()-2))
-  # if(length(paraJobs)==0)paraJobs=availCores
 
-  # message(paraJobs, " parallel jobs are registered for bootstrapping in Phase 2.")
   if (dim(x)[1]>(dim(x)[2])) {
     for(k in 1:nRuns){
       rowToKeep=sample(nToSamplFrom,maxSubSamplSiz)
@@ -90,19 +87,13 @@ bootResuHDCI=function(
     rm(x,y)
     gc()
 
-    # full_name_coef<-names(lm_res$coefficients)
-    # valid_coef<-summary(lm_res)$coefficients
-    # bootResu<-matrix(nrow = length(full_name_coef),ncol = 4)
-    # rownames(bootResu)<-full_name_coef
-    # bootResu[rownames(bootResu)%in%rownames(valid_coef),]<-valid_coef
-    #
+
     fin_ref_taxon_name<-originRefTaxNam
     all_cov_list<-list()
     nTestcov<-length(testCovInOrder)
 
 
     boot_est<-bootResu_k[,1]/nRuns
-    # p_value_est<-bootResu_k[,4]/nRuns
     se_est_all<-bootResu_k[,2]/nRuns
 
 
@@ -118,7 +109,6 @@ bootResuHDCI=function(
 
     for (ii in 1:nTestcov) {
       se_est<-se_est_all[seq(ii+1,length(full_name_coef),nPredics+1)]
-      # p_value_unadj<-p_value_est[seq(ii+1,length(full_name_coef),nPredics+1)]
       boot_est_par<-boot_est[seq(ii+1,length(full_name_coef),nPredics+1)]
 
       p_value_unadj<-(1-pnorm(abs(boot_est_par/se_est)))*2
@@ -149,9 +139,9 @@ bootResuHDCI=function(
         parallel::clusterSetRNGStream(cl=c3,(as.numeric(seed)+10^3))
       }
 
-      bootResu=bootLOPR(x=as.matrix(xSub),y=as.vector(ySub),B=bootB,nfolds=10,
-                        standardize=standardize,parallel.boot=TRUE,
-                        ncores.boot=paraJobs,alpha=bootLassoAlpha)
+      bootResu=runBootLassoHDCI(x=as.matrix(xSub),y=as.vector(ySub),bootB=bootB,
+                        standardize=standardize,
+                        paraJobs=paraJobs,bootLassoAlpha=bootLassoAlpha,seed=seed)
 
       parallel::stopCluster(c3)
 
@@ -168,8 +158,7 @@ bootResuHDCI=function(
     rm(x,y)
     gc()
 
-    # results$blasso_est<-penal
-    # results$boot_lasso<-boot_lasso
+
     results$reg_res<-bootResu
 
 
@@ -186,6 +175,11 @@ bootResuHDCI=function(
     CI_low_mat<-matrix(nrow = nTestcov,ncol = (nTaxa-1))
     se_mat<-matrix(nrow = nTestcov,ncol = (nTaxa-1))
 
+    calculate_se<-function(x) {
+      se_est<-abs(x[2]-x[1])/(2*qnorm(1-bootLassoAlpha/2))
+      return(se_est)
+      }
+    
     for (ii in 1:nTestcov) {
       se_est<-apply(boot_CI[,seq(ii+1,ncol(boot_CI),nPredics+1)],2,calculate_se)
       p_value_unadj<-numeric(length(se_est))
@@ -261,17 +255,6 @@ bootResuHDCI=function(
 
   results$sig_list_each<-sig_list_each
   results$all_cov_list<-all_cov_list
-
-
-
-
-
-  # results$CIvecLow=CIvecLow/nRuns
-  # results$CIvecUp=CIvecUp/nRuns
-  #
-  # results$finalBetaEst.LPR=finalBetaEst.LPR/nRuns
-  # results$CIvecLow.LPR=CIvecLow.LPR/nRuns
-  # results$CIvecUp.LPR=CIvecUp.LPR/nRuns
 
   return(results)
 }

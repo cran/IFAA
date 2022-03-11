@@ -1,3 +1,8 @@
+# IFAA 1.0.5
+
+* Removed unnecessary outputs.
+* Update manual and vignettes.
+
 # IFAA 1.0.4
 
 * Removed unnecessary comments. 

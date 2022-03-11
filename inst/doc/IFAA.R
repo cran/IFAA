@@ -22,23 +22,21 @@ dataM[1:5, 1:8]
 
 data(dataC)
 dim(dataC)
-dataC[1:5, ]
+dataC[1:3, ]
 
 ## ---- eval=T------------------------------------------------------------------
 results <- IFAA(MicrobData = dataM,
                 CovData = dataC,
                 linkIDname = "id",
-                testCov = c("v1", "v2"),
-                ctrlCov = c("v3"),
-                nRef = 3,
-                paraJobs = 2,
-                fdrRate = 0.25)
+                testCov = c("v1"),
+                ctrlCov = c("v2","v3"),
+                fdrRate = 0.15)
 
 ## ----eval=T-------------------------------------------------------------------
-results$analysisResults$sig_results
+results$sig_results
 
 ## ----eval=T-------------------------------------------------------------------
-results$covariatesData
+results$covariatesData[1:10,]
 
 ## -----------------------------------------------------------------------------
 data(dataM)
@@ -47,20 +45,23 @@ dataM[1:5, 1:8]
 
 data(dataC)
 dim(dataC)
-dataC[1:5, ]
+dataC[1:3, ]
 
 ## ---- eval=T------------------------------------------------------------------
 results <- MZILN(MicrobData = dataM,
                 CovData = dataC,
                  linkIDname = "id",
-                 allCov=c("v1","v2","v3"),
-                 targetTaxa = "rawCount6",
+                 targetTaxa = "rawCount18",
                  refTaxa=c("rawCount11"),
-                 paraJobs=2)
+                 allCov=c("v1","v2","v3"),
+                 fdrRate=0.15)
 
 ## ----eval=T-------------------------------------------------------------------
-results$analysisResults$targettaxa_result_list
+results$targettaxa_result_list
 
 ## ----eval=T-------------------------------------------------------------------
-results$covariatesData
+results$sig_results
+
+## ----eval=T-------------------------------------------------------------------
+results$covariatesData[1:10,]
 

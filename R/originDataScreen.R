@@ -8,9 +8,7 @@ originDataScreen=function(
   nRef,
   paraJobs,
   refTaxa,
-  fwerRate,
   maxDimensionScr=434*5*10^5,
-  #maxDimensionScr=10^5,
   standardize,
   sequentialRun,
   allFunc,
@@ -20,7 +18,6 @@ originDataScreen=function(
   adjust_method,
   seed){
 
-  method<-"mcp"
   results=list()
 
   # load data info
@@ -39,13 +36,11 @@ originDataScreen=function(
   nAlphaSelec=nPredics*nTaxa
 
   countOfSelec=rep(0,nAlphaSelec)
-  resultsByRefTaxon=list()
 
   # overwrite nRef if the reference taxon is specified
   nRef=length(refTaxa)
 
   startT1=proc.time()[3]
-  # message("start phase 1")
   if(length(paraJobs)==0){
     availCores=availableCores()
     if(is.numeric(availCores))paraJobs=max(1,availableCores()-2)
@@ -62,7 +57,6 @@ originDataScreen=function(
 
     cl<-parallel::makeCluster(paraJobs)
 
-    # parallel::clusterExport(cl=cl, varlist=allFunc,envir=parent.env(environment()))
     parallel::clusterExport(cl=cl, varlist=allFunc,envir=environment())
 
     doParallel::registerDoParallel(cl)
@@ -81,7 +75,6 @@ originDataScreen=function(
                          .packages=c("glmnet","Matrix"),
                          .errorhandling="pass") %dopar% {
 
-                           # for(i in 1:((jj-1)*paraJobs+1):(jj*paraJobs)){
 
                            ii=which(taxaNames==refTaxa[i])
                            dataForEst=dataRecovTrans(data=data,ref=refTaxa[i],Mprefix=Mprefix,
@@ -95,7 +88,6 @@ originDataScreen=function(
                            maxSubSamplSiz=min(50000,floor(maxDimensionScr/ncol(xTildLongTild.i)))
                            nToSamplFrom=nrow(xTildLongTild.i)
 
-                           if(method=="mcp") {
                              subSamplK=ceiling(nToSamplFrom/maxSubSamplSiz)
                              if(subSamplK==1)maxSubSamplSiz=nToSamplFrom
 
@@ -106,9 +98,7 @@ originDataScreen=function(
                                x=as((xTildLongTild.i[rowToKeep,]),"sparseMatrix")
                                y=yTildLongTild.i[rowToKeep]
 
-                               # Penal.i=runGlmnet(x=x,y=y,
-                               #                   nPredics=nPredics,
-                               #                   standardize=standardize)
+
                                if (dim(x)[1]>(3*dim(x)[2])) {
                                  Penal.i=runlinear(x=x,y=y,
                                                    nPredics=nPredics)
@@ -121,7 +111,6 @@ originDataScreen=function(
                                  BetaNoInt.k=as((0+(Penal.i$betaNoInt!=0)),"sparseVector")
                                  EstNoInt.k<-abs(Penal.i$betaNoInt)
                                }
-                               # BetaNoInt.k=as((0+(Penal.i$betaNoInt!=0)),"sparseVector")
                                rm(Penal.i)
                                if(k==1) {
                                  BetaNoInt.i=BetaNoInt.k
@@ -137,8 +126,6 @@ originDataScreen=function(
                              gc()
                              BetaNoInt.i=BetaNoInt.i/nRuns
                              EstNoInt.i=EstNoInt.i/nRuns
-
-                           }
 
                            selection.i=as(rep(0,nAlphaSelec),"sparseVector")
                            coef.i<-rep(0,nAlphaSelec)
@@ -160,8 +147,7 @@ originDataScreen=function(
                            # create return vector
                            recturnlist=list()
                            recturnlist[[1]]=selection.i
-                           recturnlist[[2]]=yTildLongTild.i
-                           recturnlist[[3]]<-coef.i
+                           recturnlist[[2]]<-coef.i
                            rm(selection.i,yTildLongTild.i,coef.i)
                            return(recturnlist)
                          }
@@ -177,7 +163,6 @@ originDataScreen=function(
                          .packages=c("glmnet","Matrix"),
                          .errorhandling="pass") %dopar% {
 
-                           # for(i in ((forLoopN-1)*paraJobs+1):nRef){
 
                            ii=which(taxaNames==refTaxa[i])
                            dataForEst=dataRecovTrans(data=data,ref=refTaxa[i],Mprefix=Mprefix,
@@ -191,8 +176,6 @@ originDataScreen=function(
                            maxSubSamplSiz=min(50000,floor(maxDimensionScr/ncol(xTildLongTild.i)))
                            nToSamplFrom=nrow(xTildLongTild.i)
 
-                           if(method=="mcp") {
-
                              subSamplK=ceiling(nToSamplFrom/maxSubSamplSiz)
                              if(subSamplK==1)maxSubSamplSiz=nToSamplFrom
 
@@ -202,9 +185,7 @@ originDataScreen=function(
                                rowToKeep=sample(nToSamplFrom,maxSubSamplSiz)
                                x=as((xTildLongTild.i[rowToKeep,]),"sparseMatrix")
                                y=(yTildLongTild.i[rowToKeep])
-                               # Penal.i=runGlmnet(x=x,y=y,
-                               #                   nPredics=nPredics,
-                               #                   standardize=standardize)
+
                                if (dim(x)[1]>(3*dim(x)[2])) {
                                  Penal.i=runlinear(x=x,y=y,
                                                    nPredics=nPredics)
@@ -218,7 +199,6 @@ originDataScreen=function(
                                  EstNoInt.k<-abs(Penal.i$betaNoInt)
                                }
 
-                               # BetaNoInt.k=as((0+(Penal.i$betaNoInt!=0)),"sparseVector")
                                rm(Penal.i)
                                gc()
                                if(k==1) {
@@ -235,7 +215,6 @@ originDataScreen=function(
                              gc()
                              BetaNoInt.i=BetaNoInt.i/nRuns
                              EstNoInt.i=EstNoInt.i/nRuns
-                           }
 
                            selection.i=as(rep(0,nAlphaSelec),"sparseVector")
                            coef.i<-rep(0,nAlphaSelec)
@@ -257,8 +236,7 @@ originDataScreen=function(
                            # create return vector
                            recturnlist=list()
                            recturnlist[[1]]=selection.i
-                           recturnlist[[2]]=yTildLongTild.i
-                           recturnlist[[3]]<-coef.i
+                           recturnlist[[2]]<-coef.i
                            rm(selection.i,yTildLongTild.i,coef.i)
                            return(recturnlist)
                          }
@@ -275,7 +253,6 @@ originDataScreen=function(
   rm(data)
   endT=proc.time()[3]
 
-  # message("Phase 1 done and took ",round((endT-startT1)/60,3)," minutes")
 
   selecList=list()
   for(i in 1:nRef){
@@ -283,18 +260,14 @@ originDataScreen=function(
   }
 
 
-  results$yTildLongList=list()
-  for(i in 1:nRef){
-    results$yTildLongList[[i]]=scr1Resu[[i]][[2]]
-  }
+
 
   estList=list()
   for(i in 1:nRef){
-    estList[[i]]=scr1Resu[[i]][[3]]
+    estList[[i]]=scr1Resu[[i]][[2]]
   }
 
   rm(scr1Resu)
-  # return(selecList)
 
   selecList<- lapply(selecList, as, "sparseMatrix")
   estList<-lapply(estList,as.matrix)
@@ -303,8 +276,7 @@ originDataScreen=function(
 
   rm(selecList,estList)
 
-  results$scr1ResuSelec=scr1ResuSelec
-  results$scr1ResuEst<-scr1ResuEst
+
 
   # create count of selection for individual testCov
   countOfSelecForAllPred=as(matrix(Matrix::rowSums(scr1ResuSelec),nrow=nPredics),"sparseMatrix")

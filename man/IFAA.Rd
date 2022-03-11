@@ -16,13 +16,13 @@ IFAA(
   nRefMaxForEsti = 2,
   refTaxa = NULL,
   adjust_method = "BY",
-  fdrRate = 0.25,
+  fdrRate = 0.15,
   paraJobs = NULL,
   bootB = 500,
   standardize = FALSE,
   sequentialRun = FALSE,
   refReadsThresh = 0.2,
-  taxkeepThresh = 0,
+  taxkeepThresh = 1,
   SDThresh = 0.05,
   SDquantilThresh = 0,
   balanceCut = 0.2,
@@ -30,17 +30,17 @@ IFAA(
 )
 }
 \arguments{
-\item{MicrobData}{Microbiome data matrix containing microbiome abundance with each row per
-sample and each column per taxon/OTU/ASV. It should contain an \code{"id"} variable to correspond
-to the \code{"id"} variable in the covariates data: \code{CovData}. This argument can take
+\item{MicrobData}{Microbiome data matrix containing microbiome absolute abundance or relative abundance with each row per
+sample and each column per taxon/OTU/ASV (or any other unit). It should contain an id variable to be linked with
+the id variable in the covariates data: \code{CovData}. This argument can take
 directory path. For example, \code{MicrobData="C://...//microbiomeData.tsv"}.}
 
 \item{CovData}{Covariates data matrix containing covariates and confounders with each row
-per sample and each column per variable. It should also contain an \code{"id"} variable to
-correspond to the \code{"id"} variable in the microbiome data: \code{MicrobData}. This argument can take
+per sample and each column per variable. It should also contain an id variable to
+be linked with the id variable in the microbiome data: \code{MicrobData}. This argument can take
 directory path. For example, \code{CovData = "C://...//covariatesData.tsv"}.}
 
-\item{linkIDname}{Variable name of the \code{"id"} variable in both \code{MicrobData} and \code{CovData}. The two data sets will be merged by this \code{"id"} variable.}
+\item{linkIDname}{The common variable name of the id variable in both \code{MicrobData} and \code{CovData}. The two data sets will be merged by this id variable.}
 
 \item{testCov}{Covariates that are of primary interest for testing and estimating the associations. It corresponds to $X_i$ in the equation. Default is \code{NULL} which means all covariates are \code{testCov}.}
 
@@ -52,46 +52,47 @@ directory path. For example, \code{CovData = "C://...//covariatesData.tsv"}.}
 
 \item{nRef}{The number of randomly picked reference taxa used in phase 1. Default number is \code{40}.}
 
-\item{nRefMaxForEsti}{The maximum number of reference taxa used in phase 2. The default is \code{1}.}
+\item{nRefMaxForEsti}{The maximum number of final reference taxa used in phase 2. The default is \code{2}.}
 
 \item{refTaxa}{A vector of taxa or OTU or ASV names. These are reference taxa specified by the user to be used in phase 1. If the number of reference taxa is less than 'nRef', the algorithm will randomly pick extra reference taxa to make up 'nRef'. The default is \code{NULL} since the algorithm will pick reference taxa randomly.}
 
-\item{adjust_method}{The adjusting method used for p value adjustment. Same as p.adjust function in R.}
+\item{adjust_method}{The adjusting method for p value adjustment. Default is "BY" for dependent FDR adjustment. It can take any adjustment method for p.adjust function in R.}
 
-\item{fdrRate}{The false discovery rate for identifying taxa/OTU/ASV associated with \code{testCov}. Default is \code{0.25}.}
+\item{fdrRate}{The false discovery rate for identifying taxa/OTU/ASV associated with \code{testCov}. Default is \code{0.15}.}
 
-\item{paraJobs}{If \code{sequentialRun} is \code{FALSE}, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as \code{NULL}, it will automatically detect the cores to decide the number of parallel jobs. Default is \code{NULL}. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.}
+\item{paraJobs}{If \code{sequentialRun} is \code{FALSE}, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as \code{NULL}, it will automatically detect the cores to decide the number of parallel jobs. Default is \code{NULL}.}
 
-\item{bootB}{Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is \code{500}.}
+\item{bootB}{Number of bootstrap samples for obtaining confidence interval of estimates in phase 2 for the high dimensional regression. The default is \code{500}.}
 
 \item{standardize}{This takes a logical value \code{TRUE} or \code{FALSE}. If \code{TRUE}, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is \code{FALSE}.}
 
 \item{sequentialRun}{This takes a logical value \code{TRUE} or \code{FALSE}. Default is \code{FALSE}. This argument could be useful for debug.}
 
-\item{refReadsThresh}{The threshold of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is \code{0.2} which means at least 20\% non-zero sequencing reads.}
+\item{refReadsThresh}{The threshold of proportion of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is \code{0.2} which means at least 20\% non-zero sequencing reads.}
 
-\item{taxkeepThresh}{The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis.}
+\item{taxkeepThresh}{The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis. The default is \code{0} which means taxon with at least \code{0} sequencing reads will be included into the analysis}
 
-\item{SDThresh}{The threshold of standard deviations of sequencing reads for choosing the reference taxon in phase 2. The default is \code{0.5} which means the standard deviation of sequencing reads should be at least \code{0.5}.}
+\item{SDThresh}{The threshold of standard deviations of sequencing reads for been chosen as the reference taxon in phase 2. The default is \code{0.05} which means the standard deviation of sequencing reads should be at least \code{0.05} in order to be chosen as reference taxon.}
 
-\item{SDquantilThresh}{Threshold for the quantile of standard deviation for selecting final reference taxon}
+\item{SDquantilThresh}{The threshold of the quantile of standard deviation of sequencing reads, above which could be selected as reference taxon. The default is \code{0}.}
 
-\item{balanceCut}{The threshold of non-zero sequencing reads in each group of a binary variable for choosing the reference taxon in phase 2. The default number is \code{0.2} which means at least 20\% sequencing reads are non-zero in each group.}
+\item{balanceCut}{The threshold of the proportion of non-zero sequencing reads in each group of a binary variable for choosing the final reference taxa in phase 2. The default number is \code{0.2} which means at least 20\% non-zero sequencing reads in each group are needed to be eligible for being chosen as a final reference taxon.}
 
-\item{seed}{Random seed for reproducibility. Default is \code{1}.}
+\item{seed}{Random seed for reproducibility. Default is \code{1}. It can be set to be NULL to remove seeding.}
 }
 \value{
 A list containing the estimation results.
 \itemize{
-\item \code{analysisResults$sig_results}: A list containing estimating results for all significant taxon for the variables in \code{testCov}.
-\item \code{analysisResults$full_results}: A list containing estimating results for taxon. NA denotes unestimable.
+\item \code{sig_results}: A list containing estimating results that are statistically significant.
+\item \code{full_results}: A list containing all estimating results. NA denotes unestimable.
 \item \code{covariatesData}: A dataset containing covariates and confounders used in the analyses.
 }
 }
 \description{
-Make inference on the association of covariates of microbiome
+Make inference on the association of microbiome with covariates
 }
 \details{
+Most of the time, users just need to feed the first five inputs to the function: \code{MicrobData}, \code{CovData}, \code{linkIDname}, \code{testCov} and \code{ctrlCov}. All other inputs can just take their default values.
 To model the association, the following equation is used:
 
 \loadmathjax
@@ -110,8 +111,7 @@ The challenge in microbiome analysis is that \mjeqn{\mathcal{Y}_i^k}{} can not b
 \mjeqn{Y_i^k=C_i\mathcal{Y}^k_i}{}, where \mjeqn{C_i}{} is an unknown number between 0
 and 1 that denote the observed proportion.
 
-The IFAA method can handle this challenge by
-identifying and employing reference taxa. The \code{IFAA()} will estimate the parameter
+The IFAA method can successfully addressed this challenge. The \code{IFAA()} will estimate the parameter
 \mjeqn{\beta^k}{} and their 95\% confidence intervals. High-dimensional \mjeqn{X_i}{} is handled by
 regularization.
 }
@@ -127,10 +127,8 @@ results <- IFAA(MicrobData = dataM,
                 CovData = dataC,
                 linkIDname = "id",
                 testCov = c("v1", "v2"),
-                ctrlCov = c("v3"), nRef = 3,
-                paraJobs = 2,
-                fdrRate = 0.25,
-                bootB = 5)
+                ctrlCov = c("v3"),
+                fdrRate = 0.15)
 
 }
 

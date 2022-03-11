@@ -336,7 +336,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p>IFAA is a novel approach to make inference on the association of covariates with the absolute abundance (AA) of microbiome in an ecosystem. It can be also directly applied to relative abundance (RA) data to make inference on AA because the ratio of two RA is equal ratio of their AA. This algorithm can estimate and test the associations of interest while adjusting for potential confounders. High-dimensional covariates are handled with regularization. The estimates of this method have easy interpretation like a typical regression analysis. This algorithm can find optimal reference taxa/OTU/ASV and control FDR by permutation.</p>
+<p>IFAA is a robust approach to make inference on the association of covariates with the absolute abundance (AA) of microbiome in an ecosystem. It can be also directly applied to relative abundance (RA) data to make inference on AA because the ratio of two RA is equal ratio of their AA. This algorithm can estimate and test the associations of interest while adjusting for potential confounders. High-dimensional covariates are handled with regularization. The estimates of this method have easy interpretation like a typical regression analysis. This algorithm can find optimal reference taxa/OTU/ASV and control FDR by permutation. The IFAA package also offers the ‘MZILN’ function for estimating and testing associations of abundance ratios with covariates.</p>
 <p>To model the association, the following equation is used: <span class="math display">\[
 \log(\mathcal{Y}_i^k)|\mathcal{Y}_i^k&gt;0=\beta^{0k}+X_i^T\beta^k+W_i^T\gamma^k+Z_i^Tb_i+\epsilon_i^k,\hspace{0.2cm}k=1,...,K+1,
 \]</span> where</p>
@@ -347,7 +347,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><p><span class="math inline">\(Z_i\)</span> is the design matrix for random effects.</p></li>
 <li><p><span class="math inline">\(\beta^k\)</span> is the regression coefficients that will be estimated and tested with the <code>IFAA()</code> function.</p></li>
 </ul>
-<p>The challenge in microbiome analysis is that we can not oberve <span class="math inline">\(\mathcal{Y}_i^k\)</span>. What is observed is its small proportion: <span class="math inline">\(Y_i^k=C_i\mathcal{Y}^k_i\)</span> where <span class="math inline">\(C_i\)</span> is an unknown number between 0 and 1 that denote the observed proportion. The IFAA method can handle this challenge by identifying and employing reference taxa.</p>
+<p>The challenge in microbiome analysis is that we can not oberve <span class="math inline">\(\mathcal{Y}_i^k\)</span>. What is observed is its small proportion: <span class="math inline">\(Y_i^k=C_i\mathcal{Y}^k_i\)</span> where <span class="math inline">\(C_i\)</span> is an unknown number between 0 and 1 that denote the observed proportion. The IFAA method successfuly addressed this challenge.</p>
 <div id="package-installation" class="section level2">
 <h2>Package installation</h2>
 <p>To install, type the following command in R console:</p>
@@ -356,36 +356,42 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">require</span>(devtools)</span>
 <span id="cb2-2"><a href="#cb2-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;gitlzg/IFAA&quot;</span>)</span></code></pre></div>
 </div>
-<div id="input-and-output-for-ifaa-function" class="section level2">
-<h2>Input and Output for IFAA() function</h2>
-<p>The <code>IFAA()</code> function is the main function. The User Inputs are:</p>
+<div id="input-for-ifaa-function" class="section level2">
+<h2>Input for IFAA() function</h2>
+<p>Most of the time, users just need to feed the first five inputs to the function: <code>MicrobData</code>, <code>CovData</code>, <code>linkIDname</code>, <code>testCov</code> and <code>ctrlCov</code>. All other inputs can just take their default values. Below are all the inputs of the functions</p>
 <ul>
-<li><p><code>MicrobData</code>: Microbiome data matrix containing microbiome abundance with each row per sample and each column per taxon/OTU/ASV. It should contain an <code>&quot;id&quot;</code> variable to correspond to the <code>&quot;id&quot;</code> variable in the covariates data: <code>CovData</code>. This argument can also take file directory path. For example, <code>MicrobData=&quot;C://...//microbiomeData.tsv&quot;</code>.</p></li>
-<li><p><code>CovData</code>: Covariates data matrix containing covariates and confounders with each row per sample and each column per variable. It should also contain an <code>&quot;id&quot;</code> variable to correspond to the <code>&quot;id&quot;</code> variable in the microbiome data: <code>MicrobData</code>. This argument can also take file directory path. For example, <code>CovData=&quot;C://...//covariatesData.tsv&quot;</code>.</p></li>
-<li><p><code>linkIDname</code>: Variable name of the <code>&quot;id&quot;</code> variable in both <code>MicrobData</code> and <code>CovData</code>. The two data sets will be merged by this <code>&quot;id&quot;</code> variable.</p></li>
+<li><p><code>MicrobData</code>: Microbiome data matrix containing microbiome absolute abundance or relative abundance with each row per sample and each column per taxon/OTU/ASV (or any other unit). It should contain an id variable to be linked with the id variable in the covariates data: <code>CovData</code>. This argument can also take file directory path. For example, <code>MicrobData=&quot;C://...//microbiomeData.tsv&quot;</code>.</p></li>
+<li><p><code>CovData</code>: Covariates data matrix containing covariates and confounders with each row per sample and each column per variable. It should also contain an id variable to be linked with the id variable in the microbiome data: <code>MicrobData</code>. This argument can also take file directory path. For example, <code>CovData=&quot;C://...//covariatesData.tsv&quot;</code>.</p></li>
+<li><p><code>linkIDname</code>: The common variable name of the id variable in both <code>MicrobData</code> and <code>CovData</code>. The two data sets will be merged by this id variable.</p></li>
 <li><p><code>testCov</code>: Covariates that are of primary interest for testing and estimating the associations. It corresponds to <span class="math inline">\(X_i\)</span> in the equation. Default is <code>NULL</code> which means all covariates are <code>testCov</code>.</p></li>
 <li><p><code>ctrlCov</code>: Potential confounders that will be adjusted in the model. It corresponds to <span class="math inline">\(W_i\)</span> in the equation. Default is <code>NULL</code> which means all covariates except those in <code>testCov</code> are adjusted as confounders.</p></li>
 <li><p><code>testMany</code>: This takes logical value <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, the <code>testCov</code> will contain all the variables in <code>CovData</code> provided <code>testCov</code> is set to be <code>NULL</code>. The default value is <code>TRUE</code> which does not do anything if <code>testCov</code> is not <code>NULL</code>.</p></li>
 <li><p><code>ctrlMany</code>: This takes logical value <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, all variables except <code>testCov</code> are considered as control covariates provided <code>ctrlCov</code> is set to be <code>NULL</code>. The default value is <code>FALSE</code>.</p></li>
 <li><p><code>nRef</code>: The number of randomly picked reference taxa used in phase 1. Default number is <code>40</code>.</p></li>
-<li><p><code>refTaxa</code>: A vector of taxa names. These are reference taxa specified by the user to be used in phase 1. If the number of reference taxa is less than ‘nRef’, the algorithm will randomly pick extra reference taxa to make up ‘nRef’. The default is <code>NULL</code> since the algorithm will pick reference taxa randomly.</p></li>
-<li><p><code>fdrRate</code>: The false discovery rate for identifying taxa/OTU/ASV associated with <code>testCov</code> in phase 1. Default is <code>0.25</code>.</p></li>
-<li><p><code>sequentialRun</code>: This takes a logical value <code>TRUE</code> or <code>FALSE</code>. Default is <code>FALSE</code>. This argument could be useful for debug.</p></li>
-<li><p><code>paraJobs</code>: If <code>sequentialRun</code> is <code>FALSE</code>, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as <code>NULL</code>, it will automatically detect the cores to decide the number of parallel jobs. Default is <code>NULL</code>. It is safe to have 4 gb memory per job. It may be needed to reduce the number of jobs if memory is limited.</p></li>
+<li><p><code>nRefMaxForEsti</code>: The maximum number of final reference taxa used in phase 2. The default is <code>2</code>.</p></li>
+<li><p><code>refTaxa</code>: A vector of taxa names. These are reference taxa specified by the user to be used in phase 1 if the user believe these taxa are indepenent of the covariates. If the number of reference taxa is less than ‘nRef’, the algorithm will randomly pick extra reference taxa to make up ‘nRef’. The default is <code>NULL</code> since the algorithm will pick reference taxa randomly.</p></li>
+<li><p><code>adjust_method</code> The adjusting method used for p value adjustment. Default is “BY” for dependent FDR adjustment. It can take any adjustment method for p.adjust function in R.</p></li>
+<li><p><code>fdrRate</code>: The false discovery rate for identifying taxa/OTU/ASV associated with <code>testCov</code>. Default is <code>0.15</code>.</p></li>
+<li><p><code>paraJobs</code>: If <code>sequentialRun</code> is <code>FALSE</code>, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as <code>NULL</code>, it will automatically detect the cores to decide the number of parallel jobs. Default is <code>NULL</code>.</p></li>
+<li><p><code>bootB</code>: Number of bootstrap samples for obtaining confidence interval of estimates in phase 2 for the high dimensional regression. The default is <code>500</code>.</p></li>
 <li><p><code>standardize</code>: This takes a logical value <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is <code>FALSE</code>.</p></li>
-<li><p><code>nRefMaxForEsti</code>: The maximum number of reference taxa used in phase 2. The default is <code>1</code>.</p></li>
-<li><p><code>bootB</code>: Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is <code>500</code>.</p></li>
-<li><p><code>refReadsThresh</code>: The threshold of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is <code>0.2</code> which means at least 20% non-zero sequencing reads.</p></li>
-<li><p><code>SDThresh</code>: The threshold of standard deviations of sequencing reads for choosing the reference taxon in phase 2. The default is <code>0.5</code> which means the standard deviation of sequencing reads should be at least <code>0.5</code>.</p></li>
-<li><p><code>balanceCut</code>: The threshold of non-zero sequencing reads in each group of a binary variable for choosing the reference taxon in phase 2. The default number is <code>0.2</code> which means at least 20% sequencing reads are non-zero in each group.</p></li>
-<li><p><code>seed</code>: Random seed for reproducibility. Default is <code>1</code>.</p></li>
+<li><p><code>sequentialRun</code>: This takes a logical value <code>TRUE</code> or <code>FALSE</code>. Default is <code>FALSE</code>. This argument could be useful for debug.</p></li>
+<li><p><code>refReadsThresh</code>: The threshold of proportion of non-zero sequencing reads for choosing the reference taxon in phase 2. The default is <code>0.2</code> which means at least 20% non-zero sequencing reads.</p></li>
+<li><p><code>taxkeepThresh</code>: The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis. The default is <code>1</code> which means taxon with at least <code>1</code> sequencing reads will be included into the analysis.</p></li>
+<li><p><code>SDThresh</code>: The threshold of standard deviations of sequencing reads for been chosen as the reference taxon in phase 2. The default is <code>0.05</code> which means the standard deviation of sequencing reads should be at least <code>0.05</code> in order to be chosen as reference taxon.</p></li>
+<li><p><code>SDquantilThresh</code>: The threshold of the quantile of standard deviation of sequencing reads, above which could be selected as reference taxon. The default is <code>0</code>.</p></li>
+<li><p><code>balanceCut</code>: The threshold of the proportion of non-zero sequencing reads in each group of a binary variable for choosing the final reference taxa in phase 2. The default number is <code>0.2</code> which means at least 20% non-zero sequencing reads in each group are needed to be eligible for being chosen as a final reference taxon.</p></li>
+<li><p><code>seed</code>: Random seed for reproducibility. Default is <code>1</code>. It can be set to be NULL to remove seeding.</p></li>
 </ul>
-<p>The output of <code>IFAA()</code> function is a list. The estimation results can extracted as the following:</p>
+</div>
+<div id="output-for-ifaa-function" class="section level2">
+<h2>Output for IFAA() function</h2>
+<p>The estimation results are saved in the following lists:</p>
 <ul>
-<li><p><code>analysisResults$sig_results</code>: A list containing estimating results for all the variables in <code>testCov</code>.</p></li>
-<li><p><code>analysisResults$full_results</code>: A list containing estimating results for taxon. NA denotes unestimable.</p></li>
+<li><p><code>sig_results</code>: A list containing estimating results that are statistically significant.</p></li>
+<li><p><code>full_results</code>: A list containing all estimating results. NA denotes unestimable.</p></li>
 </ul>
-<p>The covariates data including <code>testCov</code> and <code>ctrlCov</code> can be extracted in the output:</p>
+<p>The covariates data used in the analyses including <code>testCov</code> and <code>ctrlCov</code> is saved in the following object:</p>
 <ul>
 <li><code>covariatesData</code>: A dataset containing covariates and confounders used in the analyses</li>
 </ul>
@@ -397,93 +403,88 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw">data</span>(dataM)</span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="kw">dim</span>(dataM)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; [1] 20 60</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; [1] 40 61</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a>dataM[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">8</span>]</span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;   id rawCount1 rawCount2 rawCount3 rawCount4 rawCount5 rawCount6 rawCount7</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 1  1         0         0         0         0         0         3         0</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 2  2         0         0         0         0         0         0         0</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; 3  3         0         0         0         0         0       214         0</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; 4  4         0         0         0         0         0         2         0</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 5  5         0         0         0         0         0        40         0</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 1  1         4        49         2         0       360       222         4</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 2  2         0        20        14         0        86       211         5</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; 3  3         3         0         3         7         0        57         0</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; 4  4         9        18         5        31        42        58         8</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 5  5         0         2         1        19        15        67         6</span></span>
 <span id="cb3-13"><a href="#cb3-13"></a></span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="kw">data</span>(dataC)</span>
 <span id="cb3-15"><a href="#cb3-15"></a><span class="kw">dim</span>(dataC)</span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; [1] 20  6</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a>dataC[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt;   id v4       v1 v5 v2 v3</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; 1  1  1 1.653901  4  1 NA</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; 2  2  2 0.362706  5  2  2</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; 3  3  1 1.496269 NA  5  2</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; 4  4  1 1.755541  5  3  3</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; 5  5  1 1.035714  5  7 NA</span></span></code></pre></div>
-<p>Both the microbiome data <code>dataM</code> and the covariates data <code>dataC</code> contain 20 samples (i.e., 20 rows).</p>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; [1] 40  4</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>dataC[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt;   id        v1        v2        v3</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; 1  1  58.06969 -49.90376 -15.30643</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; 2  2  25.96522 -68.58894 -23.10992</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; 3  3 193.71625 124.40186 119.56747</span></span></code></pre></div>
+<p>Both the microbiome data <code>dataM</code> and the covariates data <code>dataC</code> contain 40 samples (i.e., 40 rows).</p>
 <ul>
 <li><p><code>dataM</code> contains 60 taxa with absolute abundances and these are gut microbiome.</p></li>
-<li><p><code>dataC</code> contains 5 covariates.</p></li>
+<li><p><code>dataC</code> contains 3 covariates.</p></li>
 </ul>
-<p>Next we analyze the data to test the association between microbiome and the two variables <code>&quot;v1&quot;</code> and <code>&quot;v2&quot;</code> while adjusting for the variable <code>&quot;v3&quot;</code>.</p>
+<p>Next we analyze the data to test the association between microbiome and the variable <code>&quot;v1&quot;</code> while adjusting for the variables (potential confounders) <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>results &lt;-<span class="st"> </span><span class="kw">IFAA</span>(<span class="dt">MicrobData =</span> dataM,</span>
 <span id="cb4-2"><a href="#cb4-2"></a>                <span class="dt">CovData =</span> dataC,</span>
 <span id="cb4-3"><a href="#cb4-3"></a>                <span class="dt">linkIDname =</span> <span class="st">&quot;id&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>                <span class="dt">testCov =</span> <span class="kw">c</span>(<span class="st">&quot;v1&quot;</span>, <span class="st">&quot;v2&quot;</span>),</span>
-<span id="cb4-5"><a href="#cb4-5"></a>                <span class="dt">ctrlCov =</span> <span class="kw">c</span>(<span class="st">&quot;v3&quot;</span>),</span>
-<span id="cb4-6"><a href="#cb4-6"></a>                <span class="dt">nRef =</span> <span class="dv">3</span>,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>                <span class="dt">paraJobs =</span> <span class="dv">2</span>,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>                <span class="dt">fdrRate =</span> <span class="fl">0.25</span>)</span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; There are 41 taxa without any sequencing reads before </span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt;         data merging, and excluded from the analysis</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; 13 samples</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; 18 taxa/OTU/ASV</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; 2 testCov variables in the analysis</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; These are the testCov variables:</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; v1, v2</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; 1 ctrlCov variables in the analysis</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; These are the ctrlCov variables:</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; v3</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; 0 binary covariates in the analysis</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; 54.27 percent of microbiome sequencing reads are zero</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Start Phase 1 analysis</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 3 reference taxa in Phase 1</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; 33 percent of phase 1 analysis has been done</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing 2 reference taxa in Phase 1</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; 67 percent of phase 1 analysis has been done</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; Phase 1 analysis used 0.14 minutes</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; Start Phase 2 parameter estimation</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; Final Reference Taxa are: rawCount32rawCount33</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; Start estimation for the 1th final reference taxon: rawCount32</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; Estimation done for the 1th final reference taxon: rawCount32 and it took 0.007 minutes</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; Start estimation for the 2th final reference taxon: rawCount33</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a><span class="co">#&gt; Estimation done for the 2th final reference taxon: rawCount33 and it took 0.006 minutes</span></span>
-<span id="cb4-34"><a href="#cb4-34"></a><span class="co">#&gt; Phase 2 parameter estimation done and took 0.013 minutes.</span></span>
-<span id="cb4-35"><a href="#cb4-35"></a><span class="co">#&gt; The entire analysis took 0.15 minutes</span></span></code></pre></div>
-<p>In this example, we are only interested in testing the association with <code>&quot;v1&quot;</code> and <code>&quot;v2&quot;</code> which is why <code>testCov=c(&quot;v1,&quot;v2&quot;)</code>. The variable <code>&quot;v3&quot;</code> is adjusted as a potential confounder in the analyses. For the sake of speed in this hypothetical example, we set small numbers for <code>nRef=4</code>, <code>nPermu=4</code> and <code>bootB=5</code>. These are just for illustration purpose here and are too small for a formal analysis to generate valid results.</p>
-<p>The final analysis results are stored in the list <code>analysisResults$sig_results</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>results<span class="op">$</span>analysisResults<span class="op">$</span>sig_results</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; list()</span></span></code></pre></div>
-<p>The results found the two taxa <code>&quot;rawCount23&quot;</code> and <code>&quot;rawCount32&quot;</code> associated with <code>&quot;v2&quot;</code>. The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to <span class="math inline">\(\beta^k\)</span> in the model equation.</p>
+<span id="cb4-4"><a href="#cb4-4"></a>                <span class="dt">testCov =</span> <span class="kw">c</span>(<span class="st">&quot;v1&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>                <span class="dt">ctrlCov =</span> <span class="kw">c</span>(<span class="st">&quot;v2&quot;</span>,<span class="st">&quot;v3&quot;</span>),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>                <span class="dt">fdrRate =</span> <span class="fl">0.15</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 40 samples</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 60 taxa/OTU/ASV</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 1 testCov variables in the analysis</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; These are the testCov variables:</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; v1</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; 2 ctrlCov variables in the analysis</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; These are the ctrlCov variables:</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; v2, v3</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; 0 binary covariates in the analysis</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; 25.71 percent of microbiome sequencing reads are zero</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; Start Phase 1 analysis</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; 10 parallel jobs are registered for analyzing 40 reference taxa in Phase 1</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; 33 percent of phase 1 analysis has been done</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; 10 parallel jobs are registered for analyzing 20 reference taxa in Phase 1</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; 67 percent of phase 1 analysis has been done</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; Phase 1 analysis used 0.6 minutes</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; Start Phase 2 parameter estimation</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; Start estimation for the 1th final reference taxon</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; Estimation done for the 1th final reference taxon and it took 0.012 minutes</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; Start estimation for the 2th final reference taxon</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; Estimation done for the 2th final reference taxon and it took 0.01 minutes</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; Phase 2 parameter estimation done and took 0.022 minutes.</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; The entire analysis took 0.62 minutes</span></span></code></pre></div>
+<p>In this example, we are only interested in testing the associations with <code>&quot;v1&quot;</code> which is why <code>testCov=c(&quot;v1&quot;)</code>. The variables <code>&quot;v2&quot; and &quot;v3&quot;</code> are adjusted as potential confounders in the analyses. The final analysis results are saved in the list <code>sig_results</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>results<span class="op">$</span>sig_results</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; $v1</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt;              estimate      SE est     CI low      CI up  adj p-value</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; rawCount18 0.02549632 0.004759192 0.01616830 0.03482434 1.138360e-05</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; rawCount36 0.02646417 0.005062444 0.01654178 0.03638656 1.542983e-05</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; rawCount41 0.03042955 0.004687643 0.02124177 0.03961733 2.291142e-08</span></span></code></pre></div>
+<p>The results found three taxa <code>&quot;rawCount18&quot;</code>, <code>&quot;rawCount36&quot;</code>, <code>&quot;rawCount41&quot;</code> associated with <code>&quot;v1&quot;</code> while adjusting for <code>&quot;v2&quot; and &quot;v3&quot;</code>. The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to <span class="math inline">\(\beta^k\)</span> in the model equation.</p>
 <p>The interpretation is that</p>
 <ul>
-<li><p>Every unit increase in <code>&quot;v2&quot;</code> is associated with approximately 7.9% increase in the log of absolute abundance of <code>&quot;rawCount23&quot;</code> and approximately 8.1% increase in the log of absolute abundance of <code>&quot;rawCount33&quot;</code> in the entire gut ecosystem.</p></li>
-<li><p>There were no taxa associated with <code>&quot;v1&quot;</code> in the analysis.</p></li>
+<li>Every unit increase in <code>&quot;v1&quot;</code> is associated with approximately 2.5% increase in the absolute abundance of <code>&quot;rawCount18&quot;</code>, approximately 2.6% increase in the absolute abundance of <code>&quot;rawCount36&quot;</code>, and approximately 3.0% increase in the absolute abundance of <code>&quot;rawCount41&quot;</code> in the entire gut ecosystem.</li>
 </ul>
-<p>All the analyzed covariates including <code>testCov</code> and <code>ctrlCov</code> are stored in the object: <code>covariatesData</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>results<span class="op">$</span>covariatesData</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt;    id          v1 v2  v3</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; 2   2  0.36270596  2   2</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; 3   3  1.49626921  5   2</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 4   4  1.75554095  3   3</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 6   6  1.64525227  4   4</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 8   8 -1.57781131 24  22</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 9   9  2.22581203 55   5</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 10 10  0.71642615 98  67</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 12 12  2.12230160 98   3</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; 14 14  1.99387922 93   4</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; 16 16  0.05417617 83  34</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; 18 18 -0.43426021 73  67</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; 19 19  1.46579846 68 566</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; 20 20  1.89625949 63  34</span></span></code></pre></div>
-<p>The IFAA package also implement the Multivariate Zero-Inflated Logistic Normal (MZILN) regression model for analyzing microbiome data. The regression model can be expressed as follows: <span class="math display">\[
+<p>All the analyzed covariates including <code>testCov</code> and <code>ctrlCov</code> can be extracted using the object <code>covariatesData</code>. The covariates data of the first 10 subjects can extracted as follows:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>results<span class="op">$</span>covariatesData[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,]</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt;    id         v1         v2          v3</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; 1   1  58.069691  -49.90376  -15.306430</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; 2   2  25.965216  -68.58894  -23.109922</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 3   3 193.716251  124.40186  119.567468</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 4   4  72.156467  -98.48536    2.877972</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 5   5  98.062712   23.55358  -79.893161</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 6   6  83.094848 -116.95821 -107.641285</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 7   7   8.217154 -205.64480 -139.958481</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 8   8  36.169820   58.95708   26.890379</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; 9   9 152.786131  162.60935  138.731954</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; 10 10  41.621790   65.15427   59.974310</span></span></code></pre></div>
+</div>
+<div id="mziln-function" class="section level2">
+<h2>MZILN() function</h2>
+<p>The IFAA package can also implement the Multivariate Zero-Inflated Logistic Normal (MZILN) regression model for estimating and testing the association of abundance ratios with covariates. The <code>MZILN()</code> function estimates and tests the associations of user-specified abundance ratios with covariates. When the denominator taxon of the ratio is independent of the covariates, ‘MZILN()’ should generate similar results as ‘IFAA()’. The regression model of ‘MZILN()’ can be expressed as follows: <span class="math display">\[
 \log\bigg(\frac{\mathcal{Y}_i^k}{\mathcal{Y}_i^{K+1}}\bigg)|\mathcal{Y}_i^k&gt;0,\mathcal{Y}_i^{K+1}&gt;0=\alpha^{0k}+\mathcal{X}_i^T\alpha^k+\epsilon_i^k,\hspace{0.2cm}k=1,...,K,
 \]</span> where</p>
 <ul>
@@ -493,34 +494,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><p><span class="math inline">\(\alpha^k\)</span> is the regression coefficients that will be estimated and tested.</p></li>
 </ul>
 </div>
-<div id="input-and-output-for-mziln-function" class="section level2">
-<h2>Input and Output for MZILN() function</h2>
-<p>The <code>MZILN()</code> function is to implement the Multivariate Zero-Inflated Logistic Normal model. It estimates and tests the associations given a user-specified reference taxon/OTU/ASV, whereas the ‘IFAA()’ does not require any user-specified reference taxa. If the user-specified taxon is independent of the covariates, ‘MZILN()’ should generate similar results as ‘IFAA()’. The User Inputs for ‘MZILN()’ are:</p>
+<div id="input-for-mziln-function" class="section level2">
+<h2>Input for MZILN() function</h2>
+<p>Most of the time, users just feed the first six inputs to the function: <code>MicrobData</code>, <code>CovData</code>, <code>linkIDname</code>, <code>targetTaxa</code>, <code>refTaxa</code> and <code>allCov</code>. All other inputs can just take their default values. All the inputs for ‘MZILN()’ are:</p>
 <ul>
-<li><p><code>MicrobData</code>: Microbiome data matrix containing microbiome abundance with each row per sample and each column per taxon/OTU/ASV. It should contain an <code>&quot;id&quot;</code> variable to correspond to the <code>&quot;id&quot;</code> variable in the covariates data: <code>CovData</code>. This argument can also take file directory path. For example, <code>MicrobData=&quot;C://...//microbiomeData.tsv&quot;</code>.</p></li>
-<li><p><code>CovData</code>: Covariates data matrix containing covariates and confounders with each row per sample and each column per variable. It should also contain an <code>&quot;id&quot;</code> variable to correspond to the <code>&quot;id&quot;</code> variable in the microbiome data: <code>MicrobData</code>. This argument can also take file directory path. For example, CovData=“C://…//covariatesData.tsv”.</p></li>
-<li><p><code>linkIDname</code> Variable name of the <code>&quot;id&quot;</code> variable in both <code>MicrobData</code> and <code>CovData</code>. The two data sets will be merged by this <code>&quot;id&quot;</code> variable.</p></li>
-<li><p><code>allCov</code> All covariates of interest (including confounders) for estimating and testing their associations with microbiome. Default is ‘NULL’ meaning that all covariates in covData are of interest.</p></li>
-<li><p><code>targetTaxa</code> The taxa that should be used as numerator. Default is NULL.</p></li>
-<li><p><code>refTaxa</code> Reference taxa specified by the user and will be used as the reference taxa.</p></li>
-<li><p><code>adjust_method</code> The adjusting method used for p value adjustment. Same as p.adjust function in R.</p></li>
-<li><p><code>fdrRate</code> The false discovery rate for identifying taxa/OTU/ASV associated with <code>allCov</code>. Default is <code>0.25</code>.</p></li>
-<li><p><code>sequentialRun</code> This takes a logical value <code>TRUE</code> or <code>FALSE</code>. Default is <code>TRUE</code> since there is only 1 reference taxon.</p></li>
-<li><p><code>paraJobs</code> If <code>sequentialRun</code> is <code>FALSE</code>, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as <code>NULL</code>, it will automatically detect the cores to decide the number of parallel jobs. Default is <code>NULL</code>. It is safe to have 4gb memory per job. It may be needed to reduce the number of jobs if memory is limited.</p></li>
-<li><p><code>standardize</code> This takes a logical value <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, all design matrix X in phase 1 and phase 2 will be standardized in the analyses. Default is <code>FALSE</code>.</p></li>
-<li><p><code>bootB</code> Number of bootstrap samples for obtaining confidence interval of estimates in phase 2. The default is <code>500</code>.</p></li>
-<li><p><code>bootLassoAlpha</code> The significance level in phase 2. Default is <code>0.05</code>.</p></li>
-<li><p><code>taxkeepThresh</code> The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis.</p></li>
-<li><p><code>seed</code> Random seed for reproducibility. Default is <code>1</code>.</p></li>
+<li><p><code>MicrobData</code>: Microbiome data matrix containing microbiome absolute abundance or relative abundance with each row per sample and each column per taxon/OTU/ASV (or any other unit). It should contain an id variable to be linked with the id variable in the covariates data: <code>CovData</code>. This argument can also take file directory path. For example, <code>MicrobData=&quot;C://...//microbiomeData.tsv&quot;</code>.</p></li>
+<li><p><code>CovData</code>: Covariates data matrix containing covariates and confounders with each row per sample and each column per variable. It should also contain an id variable to be linked with the id variable in the microbiome data: <code>MicrobData</code>. This argument can also take file directory path. For example, CovData=“C://…//covariatesData.tsv”.</p></li>
+<li><p><code>linkIDname</code> The common variable name of the id variable in both <code>MicrobData</code> and <code>CovData</code>. The two data sets will be merged by this id variable.</p></li>
+<li><p><code>targetTaxa</code> The numerator taxa names specified by users for the targeted ratios. Default is NULL in which case all taxa are numerator taxa (except the taxa in the argument ‘refTaxa’).</p></li>
+<li><p><code>refTaxa</code> Denominator taxa names specified by the user for the targeted ratios. This could be a vector of names.</p></li>
+<li><p><code>allCov</code> All covariates of interest (including confounders) for estimating and testing their associations with the targeted ratios. Default is ‘NULL’ meaning that all covariates in covData are of interest.</p></li>
+<li><p><code>adjust_method</code> The adjusting method for p value adjustment. Default is “BY” for dependent FDR adjustment. It can take any adjustment method for p.adjust function in R.</p></li>
+<li><p><code>fdrRate</code> The false discovery rate for identifying ratios associated with <code>allCov</code>. Default is <code>0.15</code>.</p></li>
+<li><p><code>paraJobs</code> If <code>sequentialRun</code> is <code>FALSE</code>, this specifies the number of parallel jobs that will be registered to run the algorithm. If specified as <code>NULL</code>, it will automatically detect the cores to decide the number of parallel jobs. Default is <code>NULL</code>.</p></li>
+<li><p><code>bootB</code> Number of bootstrap samples for obtaining confidence interval of estimates for the high dimensional regression. The default is <code>500</code>.</p></li>
+<li><p><code>taxkeepThresh</code> The threshold of number of non-zero sequencing reads for each taxon to be included into the analysis. The default is <code>1</code> which means taxon with at least <code>1</code> sequencing reads will be included into the analysis.</p></li>
+<li><p><code>standardize</code> This takes a logical value <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, all design matrix X in the analysis will be standardized. Default is <code>FALSE</code>.</p></li>
+<li><p><code>sequentialRun</code> This takes a logical value <code>TRUE</code> or <code>FALSE</code>. Default is <code>TRUE</code>. It can be set to be “FALSE” to increase speed if there are multiple taxa in the argument ‘refTaxa’.</p></li>
+<li><p><code>seed</code> Random seed for reproducibility. Default is <code>1</code>. It can be set to be NULL to remove seeding.</p></li>
 </ul>
-<p>The output of <code>MZILN()</code> function is a list. The estimation results can extracted as the following:</p>
+</div>
+<div id="output-for-mziln-function" class="section level2">
+<h2>Output for MZILN() function</h2>
+<p>The estimation results are saved in the following lists:</p>
 <ul>
-<li><code>analysisResults$full_results</code>: A list containing estimating results for all significant taxa.</li>
-<li><code>analysisResults$targettaxa_result_list</code>: A list containing estimating results for targetTaxa. Only available when targetTaxa is non-empty.</li>
+<li><code>targettaxa_result_list</code>: A list containing estimating results for targeted ratios. Only available when targetTaxa is non-empty.</li>
+<li><code>sig_results</code>: A list containing estimating results for all significant ratios</li>
 </ul>
-<p>All covariates data can be extracted:</p>
+<p>All covariates data used in the analysis is saved in the following object:</p>
 <ul>
-<li><code>covariatesData</code>: A dataset containing covariates and confounders used in the analyses</li>
+<li><code>covariatesData</code>: A dataset containing all covariates used in the analyses</li>
 </ul>
 </div>
 <div id="examples-1" class="section level2">
@@ -528,99 +531,91 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>We use the same example data The example dataset as that for illustrating the IFAA function. <code>dataM</code> and <code>dataC</code> are included in the package. They could be accessed by:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">data</span>(dataM)</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="kw">dim</span>(dataM)</span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; [1] 20 60</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; [1] 40 61</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>dataM[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">8</span>]</span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt;   id rawCount1 rawCount2 rawCount3 rawCount4 rawCount5 rawCount6 rawCount7</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; 1  1         0         0         0         0         0         3         0</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; 2  2         0         0         0         0         0         0         0</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 3  3         0         0         0         0         0       214         0</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; 4  4         0         0         0         0         0         2         0</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; 5  5         0         0         0         0         0        40         0</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; 1  1         4        49         2         0       360       222         4</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; 2  2         0        20        14         0        86       211         5</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 3  3         3         0         3         7         0        57         0</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; 4  4         9        18         5        31        42        58         8</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; 5  5         0         2         1        19        15        67         6</span></span>
 <span id="cb7-11"><a href="#cb7-11"></a></span>
 <span id="cb7-12"><a href="#cb7-12"></a><span class="kw">data</span>(dataC)</span>
 <span id="cb7-13"><a href="#cb7-13"></a><span class="kw">dim</span>(dataC)</span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; [1] 20  6</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a>dataC[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, ]</span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;   id v4       v1 v5 v2 v3</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; 1  1  1 1.653901  4  1 NA</span></span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; 2  2  2 0.362706  5  2  2</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; 3  3  1 1.496269 NA  5  2</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; 4  4  1 1.755541  5  3  3</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt; 5  5  1 1.035714  5  7 NA</span></span></code></pre></div>
-<p>Both the microbiome data <code>dataM</code> and the covariates data <code>dataC</code> contain 20 samples (i.e., 20 rows).</p>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; [1] 40  4</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>dataC[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, ]</span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;   id        v1        v2        v3</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; 1  1  58.06969 -49.90376 -15.30643</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; 2  2  25.96522 -68.58894 -23.10992</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; 3  3 193.71625 124.40186 119.56747</span></span></code></pre></div>
+<p>Both the microbiome data <code>dataM</code> and the covariates data <code>dataC</code> contain 40 samples (i.e., 40 rows).</p>
 <ul>
 <li><p><code>dataM</code> contains 60 taxa with absolute abundances and these are gut microbiome.</p></li>
-<li><p><code>dataC</code> contains 5 covariates.</p></li>
+<li><p><code>dataC</code> contains 3 covariates.</p></li>
 </ul>
-<p>Next we analyze the data to test the association between microbiome and all the three variables <code>&quot;v1&quot;</code>, <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>.</p>
+<p>Next we analyze the data to test the associations between the ratio “rawCount18/rawCount11” and all the three variables <code>&quot;v1&quot;</code>, <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code> in a multivariate model where all <code>&quot;v1&quot;</code>, <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code> are independent variables simultaneously.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>results &lt;-<span class="st"> </span><span class="kw">MZILN</span>(<span class="dt">MicrobData =</span> dataM,</span>
 <span id="cb8-2"><a href="#cb8-2"></a>                <span class="dt">CovData =</span> dataC,</span>
 <span id="cb8-3"><a href="#cb8-3"></a>                 <span class="dt">linkIDname =</span> <span class="st">&quot;id&quot;</span>,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>                 <span class="dt">allCov=</span><span class="kw">c</span>(<span class="st">&quot;v1&quot;</span>,<span class="st">&quot;v2&quot;</span>,<span class="st">&quot;v3&quot;</span>),</span>
-<span id="cb8-5"><a href="#cb8-5"></a>                 <span class="dt">targetTaxa =</span> <span class="st">&quot;rawCount6&quot;</span>,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>                 <span class="dt">refTaxa=</span><span class="kw">c</span>(<span class="st">&quot;rawCount11&quot;</span>),</span>
-<span id="cb8-7"><a href="#cb8-7"></a>                 <span class="dt">paraJobs=</span><span class="dv">2</span>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; There are 41 taxa without any sequencing reads before </span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt;         data merging, and excluded from the analysis</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; 13 samples</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; 18 taxa/OTU/ASV</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; 3 testCov variables in the analysis</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; These are the testCov variables:</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; v1, v2, v3</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; 0 ctrlCov variables in the analysis</span></span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; 0 binary covariates in the analysis</span></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; 54.27 percent of microbiome sequencing reads are zero</span></span>
-<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; Estimation done for the 1th reference taxon: rawCount11 and it took 0.01 minutes</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; The entire analysis took 0.01 minutes</span></span>
-<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; $rawCount11</span></span>
-<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt; $rawCount11$v1</span></span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt;           estimate  SE est    CI low    CI up adj p-value</span></span>
-<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; rawCount6  0.21309 1.51055 -2.747587 3.173767           1</span></span>
-<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; </span></span>
-<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; $rawCount11$v2</span></span>
-<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt;             estimate     SE est      CI low      CI up adj p-value</span></span>
-<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt; rawCount6 0.02032646 0.02581197 -0.03026501 0.07091792           1</span></span>
-<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#&gt; </span></span>
-<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#&gt; $rawCount11$v3</span></span>
-<span id="cb8-31"><a href="#cb8-31"></a><span class="co">#&gt;               estimate      SE est      CI low       CI up adj p-value</span></span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="co">#&gt; rawCount6 -0.003316226 0.005345113 -0.01379265 0.007160195           1</span></span></code></pre></div>
-<p>In this example, we are only interested in testing the associations with <code>&quot;v1&quot;</code>, <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code> which is why <code>allCov=c(&quot;v1,&quot;v2&quot;,&quot;v3&quot;)</code>. The reference taxa is set to be <code>&quot;rawCount11&quot;</code>, and the taxa we are interested in is <code>&quot;rawCount6&quot;</code>, so that <code>refTaxa=c(&quot;rawCount11&quot;)</code> and <code>targetTaxa = &quot;rawCount6&quot;</code>.</p>
-<p>The final analysis results are stored in the list <code>results$analysisResults$targettaxa_result_list</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>results<span class="op">$</span>analysisResults<span class="op">$</span>targettaxa_result_list</span>
+<span id="cb8-4"><a href="#cb8-4"></a>                 <span class="dt">targetTaxa =</span> <span class="st">&quot;rawCount18&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>                 <span class="dt">refTaxa=</span><span class="kw">c</span>(<span class="st">&quot;rawCount11&quot;</span>),</span>
+<span id="cb8-6"><a href="#cb8-6"></a>                 <span class="dt">allCov=</span><span class="kw">c</span>(<span class="st">&quot;v1&quot;</span>,<span class="st">&quot;v2&quot;</span>,<span class="st">&quot;v3&quot;</span>),</span>
+<span id="cb8-7"><a href="#cb8-7"></a>                 <span class="dt">fdrRate=</span><span class="fl">0.15</span>)</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; 40 samples</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; 60 taxa/OTU/ASV</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; 3 testCov variables in the analysis</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; These are the testCov variables:</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; v1, v2, v3</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; 0 ctrlCov variables in the analysis</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; 0 binary covariates in the analysis</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; 25.71 percent of microbiome sequencing reads are zero</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; Estimation done for the 1th denominator taxon: rawCount11 and it took 0.01 minutes</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; The entire analysis took 0.01 minutes</span></span></code></pre></div>
+<p>The final analysis results are saved in the list <code>targettaxa_result_list</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>results<span class="op">$</span>targettaxa_result_list</span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt; $rawCount11</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; $rawCount11$v1</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt;           estimate  SE est    CI low    CI up adj p-value</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; rawCount6  0.21309 1.51055 -2.747587 3.173767           1</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt;              estimate      SE est     CI low      CI up adj p-value</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; rawCount18 0.02310369 0.005570789 0.01218495 0.03402244 0.003085391</span></span>
 <span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; </span></span>
 <span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt; $rawCount11$v2</span></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt;             estimate     SE est      CI low      CI up adj p-value</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; rawCount6 0.02032646 0.02581197 -0.03026501 0.07091792           1</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt;               estimate      SE est       CI low       CI up adj p-value</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; rawCount18 0.002604117 0.003173695 -0.003616325 0.008824558           1</span></span>
 <span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; </span></span>
 <span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; $rawCount11$v3</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;               estimate      SE est      CI low       CI up adj p-value</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; rawCount6 -0.003316226 0.005345113 -0.01379265 0.007160195           1</span></span></code></pre></div>
-<p>The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to <span class="math inline">\(\alpha^k\)</span> in the model equation, and can be interpreted as the associations between the covariates and log-ratio of the significant taxa over the reference taxon.</p>
-<p>The interpretation is that</p>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;                estimate      SE est      CI low        CI up adj p-value</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; rawCount18 -0.006250528 0.002814316 -0.01176659 -0.000734468   0.8055964</span></span></code></pre></div>
+<p>The regression coefficients and their 95% confidence intervals are provided. These coefficients correspond to <span class="math inline">\(\alpha^k\)</span> in the model equation, and can be interpreted as the associations between the covariates and log-ratio of <code>&quot;rawCount18&quot;</code> over ‘“rawCount11”’.</p>
+<p>The interpretation for the results is that</p>
 <ul>
-<li>Every unit increase in <code>&quot;v1&quot;</code> is associated with approximately 21.3% increase in the abundance ratio of <code>&quot;rawCount6&quot;</code> over <code>&quot;rawCount11&quot;</code>;every unit increase in <code>&quot;v2&quot;</code> is associated with approximately 2.0% increase in the abundance ratio of <code>&quot;rawCount6&quot;</code> over <code>&quot;rawCount11&quot;</code>;every unit increase in <code>&quot;v3&quot;</code> is associated with approximately 0.3% decrease in the abundance ratio of <code>&quot;rawCount6&quot;</code> over <code>&quot;rawCount11&quot;</code>.</li>
+<li>Every unit increase in <code>&quot;v1&quot;</code> is associated with approximately 2.3% increase in the abundance ratio of <code>&quot;rawCount18&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>); Every unit increase in <code>&quot;v2&quot;</code> is associated with approximately 0.26% increase in the abundance ratio of <code>&quot;rawCount18&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v1&quot;</code> and <code>&quot;v3&quot;</code>), but not statistically significant; Every unit increase in <code>&quot;v3&quot;</code> is associated with approximately -0.63% decrease in the abundance ratio of <code>&quot;rawCount18&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v1&quot;</code> and <code>&quot;v2&quot;</code>), but not statistically significant.</li>
 </ul>
-<p>All the analyzed covariates are stored in the object: <code>covariatesData</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>results<span class="op">$</span>covariatesData</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt;    id          v1 v2  v3</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; 2   2  0.36270596  2   2</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; 3   3  1.49626921  5   2</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; 4   4  1.75554095  3   3</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; 6   6  1.64525227  4   4</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt; 8   8 -1.57781131 24  22</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; 9   9  2.22581203 55   5</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; 10 10  0.71642615 98  67</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; 12 12  2.12230160 98   3</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; 14 14  1.99387922 93   4</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; 16 16  0.05417617 83  34</span></span>
-<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; 18 18 -0.43426021 73  67</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt; 19 19  1.46579846 68 566</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt; 20 20  1.89625949 63  34</span></span></code></pre></div>
+<p>We can also extract all the ratios (with <code>&quot;rawCount11&quot;</code> being the denominator taxon) that are significantly associated with any of the covariates as follows:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>results<span class="op">$</span>sig_results</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt; $rawCount11</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; $rawCount11$v1</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt;              estimate      SE est     CI low      CI up  adj p-value</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; rawCount18 0.02310369 0.005570789 0.01218495 0.03402244 0.0030853909</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; rawCount36 0.02965713 0.005894748 0.01810342 0.04121084 0.0001341658</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt; rawCount41 0.02562728 0.005462932 0.01491993 0.03633463 0.0003737775</span></span></code></pre></div>
+<p>The interpretation for the results is that</p>
+<ul>
+<li>Every unit increase in <code>&quot;v1&quot;</code> is associated with approximately 2.3% increase in the abundance ratio of <code>&quot;rawCount18&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>), and it is statistically significant; Every unit increase in <code>&quot;v1&quot;</code> is also associated with approximately 3.0% increase in the abundance ratio of <code>&quot;rawCount36&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>), and it is statistically significant; Every unit increase in <code>&quot;v1&quot;</code> is also associated with approximately 2.6% decrease in the abundance ratio of <code>&quot;rawCount41&quot;</code> over <code>&quot;rawCount11&quot;</code> (while controlling for <code>&quot;v2&quot;</code> and <code>&quot;v3&quot;</code>), and it is statistically significant.</li>
+</ul>
+<p>All covariates used in the analysis can be extracted using the object <code>covariatesData</code>. The covariates data of the first 10 subjects are extracted as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>results<span class="op">$</span>covariatesData[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,]</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#&gt;    id         v1         v2          v3</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt; 1   1  58.069691  -49.90376  -15.306430</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#&gt; 2   2  25.965216  -68.58894  -23.109922</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co">#&gt; 3   3 193.716251  124.40186  119.567468</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#&gt; 4   4  72.156467  -98.48536    2.877972</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#&gt; 5   5  98.062712   23.55358  -79.893161</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#&gt; 6   6  83.094848 -116.95821 -107.641285</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="co">#&gt; 7   7   8.217154 -205.64480 -139.958481</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="co">#&gt; 8   8  36.169820   58.95708   26.890379</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="co">#&gt; 9   9 152.786131  162.60935  138.731954</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a><span class="co">#&gt; 10 10  41.621790   65.15427   59.974310</span></span></code></pre></div>
 </div>
 
 
