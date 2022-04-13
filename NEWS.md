@@ -1,3 +1,7 @@
+# IFAA 1.0.6
+
+* Fix standardize and binaryInd bug.  
+
 # IFAA 1.0.5
 
 * Removed unnecessary outputs.
