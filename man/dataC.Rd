@@ -5,10 +5,10 @@
 \alias{dataC}
 \title{Sample covariates data}
 \format{
-A data frame with 40 rows and 4 variables:
+A data frame with 40 rows and 3 variables:
 }
 \usage{
-dataC
+data(dataC)
 }
 \description{
 A dataset ontains 3 covariates.

@@ -29,10 +29,6 @@ dataInfo=function(
     w=qualifyData[,taxaNames]
     nSubQualif=nrow(qualifyData)
     taxaOverThresh=taxaNames[(Matrix::colSums(w>0)>=(nSubQualif*refReadsThresh))]
-    if(length(taxaOverThresh)==0){
-      message("There are no taxa with presence over the threshold:",refReadsThresh,
-          ". Try lower the reference taxa reads threshold.","\n")
-    }
 
     # check the sd threshold
     sdTaxaOverThresh=rep(0,length(taxaOverThresh))
@@ -46,10 +42,8 @@ dataInfo=function(
     results$sdTaxa=sdTaxaOverThresh
 
     TaxaOverSdThresh=taxaOverThresh[(sdTaxaOverThresh>=SDThresh)]
-    if(length(TaxaOverSdThresh)==0){
-      message("There are no taxa with SD over the SD threshold:",SDThresh,
-          ". Try lower the SD threshold","\n")
-    }
+    sdOverSdThresh <- sdTaxaOverThresh[sdTaxaOverThresh >= SDThresh]
+
     rm(taxa.i,taxaOverThresh)
 
     # check the sd quantile threshold
@@ -59,13 +53,9 @@ dataInfo=function(
       posTaxaAll.i=taxaAll.i[(taxaAll.i>0)]
       if(length(posTaxaAll.i)>1){sdAllTaxa[i]=sd(posTaxaAll.i)}
     }
-    goodRefTaxaCandi=TaxaOverSdThresh[(TaxaOverSdThresh>=quantile(sdAllTaxa,probs=SDquantilThresh))]
+    goodRefTaxaCandi=TaxaOverSdThresh[(sdOverSdThresh>=quantile(sdAllTaxa,probs=SDquantilThresh))]
     rm(sdAllTaxa,posTaxaAll.i,TaxaOverSdThresh)
 
-    if(length(goodRefTaxaCandi)==0){
-      message("There are no taxa with SD over the SD quantile threshold:",SDquantilThresh,
-          ". Try lower the SD quantile threshold","\n")
-    }
     rm(w)
   }
 
@@ -85,11 +75,6 @@ dataInfo=function(
       nBinPred=length(allBinPred)
 
       taxaBalanceBin=c()
-      bin_nonz_sum<-colSums(qualifyData[,allBinPred,drop=FALSE])
-
-      if (min(bin_nonz_sum,nSubQualif-bin_nonz_sum)<=floor(balanceCut*nSubQualif)) {
-        stop("one of the binary variable is not diverse enough")
-      }
 
       for(i in 1:nTaxa){
         for(j in 1:nBinPred){
