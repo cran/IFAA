@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>IFAA</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">IFAA</h1>
+
+
+
+<p>IFAA offers a robust approach to make inference on the association of
+covariates with the absolute abundance (AA) of microbiome in an
+ecosystem. It can be also directly applied to relative abundance (RA)
+data to make inference on AA because the ratio of two RA is equal ratio
+of their AA. This algorithm can estimate and test the associations of
+interest while adjusting for potential confounders. High-dimensional
+covariates are handled with regularization. The estimates of this method
+have easy interpretation like a typical regression analysis.
+High-dimensional covariates are handled with regularization and it is
+implemented by parallel computing. False discovery rate is automatically
+controlled by this approach. Zeros do not need to be imputed by a
+positive value for the analysis. The IFAA package also offers the
+‘MZILN’ function for estimating and testing associations of abundance
+ratios with covariates.</p>
+<p>To model the association, the following equation is used: <span class="math display">\[
+\log(\mathcal{Y}_i^k)|\mathcal{Y}_i^k&gt;0=\beta^{0k}+X_i^T\beta^k+W_i^T\gamma^k+Z_i^Tb_i+\epsilon_i^k,\hspace{0.2cm}k=1,...,K+1,
+\]</span> where</p>
+<ul>
+<li><p><span class="math inline">\(\mathcal{Y}_i^k\)</span> is the AA of
+taxa <span class="math inline">\(k\)</span> in subject <span class="math inline">\(i\)</span> in the entire ecosystem.</p></li>
+<li><p><span class="math inline">\(X_i\)</span> is the covariate
+matrix.</p></li>
+<li><p><span class="math inline">\(W_i\)</span> is the confounder
+matrix.</p></li>
+<li><p><span class="math inline">\(Z_i\)</span> is the design matrix for
+random effects.</p></li>
+<li><p><span class="math inline">\(\beta^k\)</span> is the regression
+coefficients that will be estimated and tested with the
+<code>IFAA()</code> function.</p></li>
+</ul>
+<p>The challenge in microbiome analysis is that we can not oberve <span class="math inline">\(\mathcal{Y}_i^k\)</span>. What is observed is its
+small proportion: <span class="math inline">\(Y_i^k=C_i\mathcal{Y}^k_i\)</span> where <span class="math inline">\(C_i\)</span> is an unknown number between 0 and 1
+that denote the observed proportion. The IFAA method successfuly
+addressed this challenge.</p>
+<div id="package-installation" class="section level2">
+<h2>Package installation</h2>
+<p>To install, type the following command in R console:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;IFAA&quot;</span>, <span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span></code></pre></div>
+<p>The package could be also installed from GitHub using the following
+code:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(devtools)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;gitlzg/IFAA&quot;</span>)</span></code></pre></div>
+</div>
+<div id="input-for-ifaa-function" class="section level2">
+<h2>Input for IFAA() function</h2>
+<p>Most of the time, users just need to feed the first three inputs to
+the function: <code>experiment_dat</code>, <code>testCov</code> and
+<code>ctrlCov</code>. All other inputs can just take their default
+values. Below are all the inputs of the functions</p>
+<ul>
+<li><p><code>experiment_dat</code>: A SummarizedExperiment object
+containing microbiome data and covariates (see example on how to create
+a SummarizedExperiment object). The microbiome data can be absolute
+abundance or relative abundance with each column per sample and each row
+per taxon/OTU/ASV (or any other unit). No imputation is needed for
+zero-valued data points. The covariates data contains covariates and
+confounders with each row per sample and each column per variable. The
+covariates data has to be numeric or binary. Categorical variables
+should be converted into dummy variables.</p></li>
+<li><p><code>testCov</code>: Covariates that are of primary interest for
+testing and estimating the associations. It corresponds to <span class="math inline">\(X_i\)</span> in the equation. Default is
+<code>NULL</code> which means all covariates are
+<code>testCov</code>.</p></li>
+<li><p><code>ctrlCov</code>: Potential confounders that will be adjusted
+in the model. It corresponds to <span class="math inline">\(W_i\)</span>
+in the equation. Default is <code>NULL</code> which means all covariates
+except those in <code>testCov</code> are adjusted as
+confounders.</p></li>
+<li><p><code>sampleIDname</code>: Name of the sample ID variable in the
+data. In the case that the data does not have an ID variable, this can
+be ignored. Default is NULL.</p></li>
+<li><p><code>testMany</code>: This takes logical value <code>TRUE</code>
+or <code>FALSE</code>. If <code>TRUE</code>, the <code>testCov</code>
+will contain all the variables in <code>CovData</code> provided
+<code>testCov</code> is set to be <code>NULL</code>. The default value
+is <code>TRUE</code> which does not do anything if <code>testCov</code>
+is not <code>NULL</code>.</p></li>
+<li><p><code>ctrlMany</code>: This takes logical value <code>TRUE</code>
+or <code>FALSE</code>. If <code>TRUE</code>, all variables except
+<code>testCov</code> are considered as control covariates provided
+<code>ctrlCov</code> is set to be <code>NULL</code>. The default value
+is <code>FALSE</code>.</p></li>
+<li><p><code>nRef</code>: The number of randomly picked reference taxa
+used in phase 1. Default number is <code>40</code>.</p></li>
+<li><p><code>nRefMaxForEsti</code>: The maximum number of final
+reference taxa used in phase 2. The default is <code>2</code>.</p></li>
+<li><p><code>refTaxa</code>: A vector of taxa names. These are reference
+taxa specified by the user to be used in phase 1 if the user believe
+these taxa are indepenent of the covariates. If the number of reference
+taxa is less than ‘nRef’, the algorithm will randomly pick extra
+reference taxa to make up ‘nRef’. The default is <code>NULL</code> since
+the algorithm will pick reference taxa randomly.</p></li>
+<li><p><code>adjust_method</code>: The adjusting method used for p value
+adjustment. Default is “BY” for dependent FDR adjustment. It can take
+any adjustment method for p.adjust function in R.</p></li>
+<li><p><code>fdrRate</code>: The false discovery rate for identifying
+taxa/OTU/ASV associated with <code>testCov</code>. Default is
+<code>0.05</code>.</p></li>
+<li><p><code>paraJobs</code>: If <code>sequentialRun</code> is
+<code>FALSE</code>, this specifies the number of parallel jobs that will
+be registered to run the algorithm. If specified as <code>NULL</code>,
+it will automatically detect the cores to decide the number of parallel
+jobs. Default is <code>NULL</code>.</p></li>
+<li><p><code>bootB</code>: Number of bootstrap samples for obtaining
+confidence interval of estimates in phase 2 for the high dimensional
+regression. The default is <code>500</code>.</p></li>
+<li><p><code>standardize</code>: This takes a logical value
+<code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, the
+design matrix for X will be standardized in the analyses and the
+results. Default is <code>FALSE</code>.</p></li>
+<li><p><code>sequentialRun</code>: This takes a logical value
+<code>TRUE</code> or <code>FALSE</code>. Default is <code>FALSE</code>.
+This argument could be useful for debug.</p></li>
+<li><p><code>refReadsThresh</code>: The threshold of proportion of
+non-zero sequencing reads for choosing the reference taxon in phase 2.
+The default is <code>0.2</code> which means at least 20% non-zero
+sequencing reads.</p></li>
+<li><p><code>taxDropThresh</code>: The threshold of number of non-zero
+sequencing reads for each taxon to be dropped from the analysis. The
+default is <code>0</code> which means taxon without any sequencing reads
+will be dropped from the analysis.</p></li>
+<li><p><code>SDThresh</code>: The threshold of standard deviations of
+sequencing reads for been chosen as the reference taxon in phase 2. The
+default is <code>0.05</code> which means the standard deviation of
+sequencing reads should be at least <code>0.05</code> in order to be
+chosen as reference taxon.</p></li>
+<li><p><code>SDquantilThresh</code>: The threshold of the quantile of
+standard deviation of sequencing reads, above which could be selected as
+reference taxon. The default is <code>0</code>.</p></li>
+<li><p><code>balanceCut</code>: The threshold of the proportion of
+non-zero sequencing reads in each group of a binary variable for
+choosing the final reference taxa in phase 2. The default number is
+<code>0.2</code> which means at least 20% non-zero sequencing reads in
+each group are needed to be eligible for being chosen as a final
+reference taxon.</p></li>
+</ul>
+</div>
+<div id="output-for-ifaa-function" class="section level2">
+<h2>Output for IFAA() function</h2>
+<p>A list containing 2 elements</p>
+<ul>
+<li><p><code>full_results</code>: The main results for IFAA containing
+the estimation and testing results for all associations between all taxa
+and all test covariates in <code>testCov</code>. It is a dataframe with
+each row representing an association, and eight columns named as
+“taxon”, “cov”, “estimate”, “SE.est”, “CI.low”, “CI.up”, “adj.p.value”,
+and “sig_ind”. The columns correspond to taxon name, covariate name,
+association estimates, standard error estimates, lower bound and upper
+bound of the 95% confidence interval, adjusted p value, and the
+indicator showing whether the association is significant after multiple
+testing adjustment.</p></li>
+<li><p><code>metadata</code>: The metadata is a list containing the
+following items: <code>covariatesData</code>: A dataset containing
+covariates and confounders used in the analyses.
+<code>final_ref_taxon</code>: The final 2 reference taxa used for
+analysis. <code>ref_taxon_count</code>: The counts of selection for the
+associations of all taxa with test covariates in Phase 1.
+<code>ref_taxon_est</code>: The average magnitude estimates for the
+associations of all taxa with test covariates in Phase 1.
+<code>totalTimeMins</code>: Total time used for the entire analysis.
+<code>fdrRate</code>: FDR rate used for the analysis.
+<code>adjust_method</code>: Multiple testing adjust method used for the
+analysis.</p></li>
+</ul>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>The example generates an example data from scratch, with 10 taxon, 40
+subjects, and 3 covariates.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(IFAA)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## create an ID variable for the example data</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>ID<span class="ot">=</span><span class="fu">seq_len</span>(<span class="dv">20</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="do">## generate three covariates x1, x2, and x3, with x2 binary</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>x1<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">20</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>x2<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">20</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>x3<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">20</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>dataC<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="fu">cbind</span>(ID,x1,x2,x3))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="do">## Coefficients for x1, x2, and x3 among 10 taxa.</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>beta_1<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">9</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>beta_2<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.2</span>,<span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">8</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>beta_3<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>beta_mat<span class="ot">&lt;-</span><span class="fu">cbind</span>(beta_1,beta_2,beta_3)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate absolute abundance for 10 taxa in ecosystem.</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>dataM_eco<span class="ot">&lt;-</span><span class="fu">floor</span>(<span class="fu">exp</span>(<span class="dv">10</span><span class="sc">+</span><span class="fu">as.matrix</span>(dataC[,<span class="sc">-</span><span class="dv">1</span>]) <span class="sc">%*%</span> <span class="fu">t</span>(beta_mat) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">200</span>,<span class="at">sd=</span><span class="fl">0.05</span>)))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate sequence depth and generate observed abundance</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>Ci<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">20</span>,<span class="fl">0.01</span>,<span class="fl">0.05</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>dataM<span class="ot">&lt;-</span><span class="fu">floor</span>(<span class="fu">apply</span>(dataM_eco,<span class="dv">2</span>,<span class="cf">function</span>(x) x<span class="sc">*</span>Ci))</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dataM)<span class="ot">&lt;-</span><span class="fu">paste0</span>(<span class="st">&quot;rawCount&quot;</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="do">## Randomly introduce 0 to make 25% sparsity level.</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>dataM[<span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">length</span>(dataM)),<span class="fu">length</span>(dataM)<span class="sc">/</span><span class="dv">4</span>)]<span class="ot">&lt;-</span><span class="dv">0</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>dataM<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="fu">cbind</span>(ID,dataM))</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="do">## The following steps are to create a SummarizedExperiment object.</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="do">## If you already have a SummarizedExperiment format data, you can</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="do">## ignore the following steps and directly feed it to the IFAA function.</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="do">## Merge two dataset by ID variable</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>data_merged<span class="ot">&lt;-</span><span class="fu">merge</span>(dataM,dataC,<span class="at">by=</span><span class="st">&quot;ID&quot;</span>,<span class="at">all=</span><span class="cn">FALSE</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Seperate microbiome data and covariate data, drop ID variable from microbiome data</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>dataM_sub<span class="ot">&lt;-</span>data_merged[,<span class="fu">colnames</span>(dataM)[<span class="sc">!</span><span class="fu">colnames</span>(dataM)<span class="sc">%in%</span><span class="fu">c</span>(<span class="st">&quot;ID&quot;</span>)]]</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>dataC_sub<span class="ot">&lt;-</span>data_merged[,<span class="fu">colnames</span>(dataC)]</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="do">## Create SummarizedExperiment object</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>test_dat<span class="ot">&lt;-</span>SummarizedExperiment<span class="sc">::</span><span class="fu">SummarizedExperiment</span>(</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="at">assays=</span><span class="fu">list</span>(<span class="at">MicrobData=</span><span class="fu">t</span>(dataM_sub)), <span class="at">colData=</span>dataC_sub)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="do">## Create a SummarizedExperiment object </span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>test_dat<span class="ot">&lt;-</span>SummarizedExperiment<span class="sc">::</span><span class="fu">SummarizedExperiment</span>(<span class="at">assays=</span><span class="fu">list</span>(<span class="at">MicrobData=</span><span class="fu">t</span>(dataM_sub)), <span class="at">colData=</span>dataC_sub)</span></code></pre></div>
+<p>If you already have a SummarizedExperiment format data, you can
+ignore the above steps for creating a SummarizedExperiment object. In
+the generated data, rawCount1 is associated with x1, rawCount2 is
+associated with x2, and the sparsity level is 25%. Next we analyze the
+data to test the association between microbiome and the variable
+<code>&quot;x1&quot;, &quot;x2&quot;</code> while adjusting for the variable (potential
+confounder) <code>&quot;x3&quot;</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># For full reproducibility</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">IFAA</span>(<span class="at">experiment_dat =</span> test_dat,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">testCov =</span> <span class="fu">c</span>(<span class="st">&quot;x1&quot;</span>,<span class="st">&quot;x2&quot;</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">ctrlCov =</span> <span class="fu">c</span>(<span class="st">&quot;x3&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">sampleIDname=</span><span class="st">&quot;ID&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">fdrRate =</span> <span class="fl">0.05</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">nRef=</span><span class="dv">2</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">paraJobs =</span> <span class="dv">2</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 samples</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 taxa/OTU/ASV</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 testCov variables in the analysis</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; These are the testCov variables:</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1, x2</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 ctrlCov variables in the analysis</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; These are the ctrlCov variables:</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x3</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 binary covariates in the analysis</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; These are the binary covariates:</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 25 percent of microbiome sequencing reads are zero</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Start Phase 1 analysis</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 parallel jobs are registered for the analysis.</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 33 percent of phase 1 analysis has been done and it took 0.2 minutes</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 parallel jobs are registered for the analysis.</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 100 percent of phase 1 analysis has been done and it took 0.4 minutes</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Start Phase 2 parameter estimation</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing reference taxa in Phase 2</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 50 percent of Phase 2 is done and it took 0.14 minutes</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing reference taxa in Phase 2</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Entire Phase 2 parameter estimation done and took 0.271 minutes.</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The entire analysis took 0.67 minutes</span></span></code></pre></div>
+<p>In this example, we are only interested in testing the associations
+with <code>&quot;x1&quot;</code> and <code>&quot;x2&quot;</code> which is why
+<code>testCov=c(&quot;x1&quot;,&quot;x2)</code>. The variables <code>&quot;x3&quot;</code> are
+adjusted as potential confounders in the analyses. The final analysis
+results are saved in the list <code>full_result</code> and the
+significant results can be extracted as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>summary_res<span class="ot">&lt;-</span>results<span class="sc">$</span>full_result</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sig_results<span class="ot">&lt;-</span><span class="fu">subset</span>(summary_res,sig_ind<span class="sc">==</span><span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sig_results</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DataFrame with 2 rows and 8 columns</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         taxon         cov  estimate    SE.est    CI.low     CI.up adj.p.value</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;character&gt; &lt;character&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   rawCount1          x1 0.0810973 0.0189065 0.0440407  0.118154 3.89542e-04</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   rawCount2          x2 0.2021147 0.0355637 0.1324098  0.271820 2.87484e-07</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sig_ind</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;logical&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      TRUE</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      TRUE</span></span></code></pre></div>
+<p>After adjusting for multiple testing, the results found
+<code>&quot;rawCount1&quot;</code> associated with <code>&quot;x1&quot;</code>, and
+<code>&quot;rawCount2&quot;</code> associated with <code>&quot;x2&quot;</code>, while
+adjusting for <code>&quot;x3&quot;</code>. The regression coefficients and their
+95% confidence intervals are provided. These coefficients correspond to
+<span class="math inline">\(\beta^k\)</span> in the model equation.</p>
+<p>The interpretation is:</p>
+<ul>
+<li>Every unit increase in <code>&quot;x1&quot;</code> is associated with
+approximately 8.4% increase in the absolute abundance of
+<code>&quot;rawCount1&quot;</code> in the entire ecosystem of interest (while
+controlling for <code>&quot;x3&quot;</code>); Every unit increase in
+<code>&quot;x2&quot;</code> is associated with approximately 22.4% increase in the
+absolute abundance of <code>&quot;rawCount2&quot;</code> in the entire ecosystem
+of interest (while controlling for <code>&quot;x3&quot;</code>), .</li>
+</ul>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>Li et al.(2021) IFAA: Robust association identification and Inference
+For Absolute Abundance in microbiome analyses. Journal of the American
+Statistical Association. 116(536):1595-1608</p>
+</div>
+<div id="mziln-function" class="section level2">
+<h2>MZILN() function</h2>
+<p>The IFAA package can also implement the Multivariate Zero-Inflated
+Logistic Normal (MZILN) regression model for estimating and testing the
+association of abundance ratios with covariates. The
+<code>MZILN()</code> function estimates and tests the associations of
+user-specified abundance ratios with covariates. When the denominator
+taxon of the ratio is independent of the covariates, ‘MZILN()’ should
+generate similar results as ‘IFAA()’. The regression model of ‘MZILN()’
+can be expressed as follows: <span class="math display">\[
+\log\bigg(\frac{\mathcal{Y}_i^k}{\mathcal{Y}_i^{K+1}}\bigg)|\mathcal{Y}_i^k&gt;0,\mathcal{Y}_i^{K+1}&gt;0=\alpha^{0k}+\mathcal{X}_i^T\alpha^k+\epsilon_i^k,\hspace{0.2cm}k=1,...,K,
+\]</span> where</p>
+<ul>
+<li><p><span class="math inline">\(\mathcal{Y}_i^k\)</span> is the AA of
+taxa <span class="math inline">\(k\)</span> in subject <span class="math inline">\(i\)</span> in the entire ecosystem.</p></li>
+<li><p><span class="math inline">\(\mathcal{Y}_i^{K+1}\)</span> is the
+reference taxon (specified by user).</p></li>
+<li><p><span class="math inline">\(\mathcal{X}_i\)</span> is the
+covariate matrix for all covariates including confounders.</p></li>
+<li><p><span class="math inline">\(\alpha^k\)</span> is the regression
+coefficients that will be estimated and tested.</p></li>
+</ul>
+</div>
+<div id="input-for-mziln-function" class="section level2">
+<h2>Input for MZILN() function</h2>
+<p>Most of the time, users just feed the first three inputs to the
+function: <code>experiment_dat</code>, <code>refTaxa</code> and
+<code>allCov</code>. All other inputs can just take their default
+values. All the inputs for ‘MZILN()’ are:</p>
+<ul>
+<li><p><code>experiment_dat</code>: A SummarizedExperiment object
+containing microbiome data and covariates (see example on how to create
+a SummarizedExperiment object). The microbiome data can be absolute
+abundance or relative abundance with each column per sample and each row
+per taxon/OTU/ASV (or any other unit). No imputation is needed for
+zero-valued data points. The covariates data contains covariates and
+confounders with each row per sample and each column per variable. The
+covariates data has to be numeric or binary. Categorical variables
+should be converted into dummy variables.</p></li>
+<li><p><code>refTaxa</code>: Denominator taxa names specified by the
+user for the targeted ratios. This could be a vector of names.</p></li>
+<li><p><code>allCov</code>: All covariates of interest (including
+confounders) for estimating and testing their associations with the
+targeted ratios. Default is ‘NULL’ meaning that all covariates in
+covData are of interest.</p></li>
+<li><p><code>sampleIDname</code>: Name of the sample ID variable in the
+data. In the case that the data does not have an ID variable, this can
+be ignored. Default is NULL.</p></li>
+<li><p><code>adjust_method</code>: The adjusting method for p value
+adjustment. Default is “BY” for dependent FDR adjustment. It can take
+any adjustment method for p.adjust function in R.</p></li>
+<li><p><code>fdrRate</code> The false discovery rate for identifying
+ratios associated with <code>allCov</code>. Default is
+<code>0.05</code>.</p></li>
+<li><p><code>paraJobs</code>: If <code>sequentialRun</code> is
+<code>FALSE</code>, this specifies the number of parallel jobs that will
+be registered to run the algorithm. If specified as <code>NULL</code>,
+it will automatically detect the cores to decide the number of parallel
+jobs. Default is <code>NULL</code>.</p></li>
+<li><p><code>bootB</code>: Number of bootstrap samples for obtaining
+confidence interval of estimates for the high dimensional regression.
+The default is <code>500</code>.</p></li>
+<li><p><code>taxDropThresh</code>: The threshold of number of non-zero
+sequencing reads for each taxon to be dropped from the analysis. The
+default is <code>0</code> which means taxon without any sequencing reads
+will be dropped from the analysis.</p></li>
+<li><p><code>standardize</code>: This takes a logical value
+<code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, the
+design matrix for X will be standardized in the analyses and the
+results. Default is <code>FALSE</code>.</p></li>
+<li><p><code>sequentialRun</code>: This takes a logical value
+<code>TRUE</code> or <code>FALSE</code>. Default is <code>TRUE</code>.
+It can be set to be “FALSE” to increase speed if there are multiple taxa
+in the argument ‘refTaxa’.</p></li>
+</ul>
+</div>
+<div id="output-for-mziln-function" class="section level2">
+<h2>Output for MZILN() function</h2>
+<p>A list with two elements:</p>
+<ul>
+<li><p><code>full_results</code>: The main results for MZILN containing
+the estimation and testing results for all associations between all taxa
+ratios with refTaxan being the denominator and all covariates in
+<code>allCov</code>. It is a dataframe with each row representing an
+association, and ten columns named as “ref_tax”, “taxon”, “cov”,
+“estimate”, “SE.est”, “CI.low”, “CI.up”, “adj.p.value”, “unadj.p.value”
+and “sig_ind”. The columns correspond to the denominator taxon,
+numerator taxon, covariate name, association estimates, standard error
+estimates, lower bound and upper bound of the 95% confidence interval,
+adjusted p value, and the indicator showing whether the association is
+significant after multiple testing adjustment.</p></li>
+<li><p><code>metadata</code>: The metadata is a list containing total
+time used in minutes, FDR rate, and multiple testing adjustment method
+used.</p></li>
+</ul>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>The example used data generated from IFAA example, with 10 taxon, 40
+subjects, and 3 covariates.</p>
+<p>Next we analyze the data to test the associations between the ratio
+“rawCount5/rawCount10” and all the three variables <code>&quot;x1&quot;</code>,
+<code>&quot;x2&quot;</code> and <code>&quot;x3&quot;</code> in a multivariate model where
+all <code>&quot;x1&quot;</code>, <code>&quot;x2&quot;</code> and <code>&quot;x3&quot;</code> are
+independent variables simultaneously.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># For full reproducibility</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">MZILN</span>(<span class="at">experiment_dat=</span>test_dat,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">refTaxa=</span><span class="fu">c</span>(<span class="st">&quot;rawCount10&quot;</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">allCov=</span><span class="fu">c</span>(<span class="st">&quot;x1&quot;</span>,<span class="st">&quot;x2&quot;</span>,<span class="st">&quot;x3&quot;</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sampleIDname=</span><span class="st">&quot;ID&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fdrRate=</span><span class="fl">0.05</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">paraJobs =</span> <span class="dv">2</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data dimensions (after removing missing data if any):</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 samples</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 taxa/OTU/ASV</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 testCov variables in the analysis</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; These are the testCov variables:</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1, x2, x3</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0 ctrlCov variables in the analysis</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 binary covariates in the analysis</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; These are the binary covariates:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 25 percent of microbiome sequencing reads are zero</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 parallel jobs are registered for analyzing reference taxa in Phase 2</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Estimation done for the 1th denominator taxon: rawCount10 and it took 0.13 minutes</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The entire analysis took 0.13 minutes</span></span></code></pre></div>
+<p>The full final analysis results can be extracted as follows:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>summary_res<span class="ot">&lt;-</span>results<span class="sc">$</span>full_results</span></code></pre></div>
+<p>The results for the log-ratio of “rawCount5” over “rawCount10” can
+extracted as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>summary_res[summary_res<span class="sc">$</span>taxon<span class="sc">==</span><span class="st">&quot;rawCount5&quot;</span>,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; DataFrame with 3 rows and 10 columns</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       ref_tax       taxon         cov   estimate    SE.est     CI.low</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;character&gt; &lt;character&gt; &lt;character&gt;  &lt;numeric&gt; &lt;numeric&gt;  &lt;numeric&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  rawCount10   rawCount5          x1  0.0099748 0.0228440 -0.0347994</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  rawCount10   rawCount5          x2 -0.0932306 0.0386687 -0.1690213</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  rawCount10   rawCount5          x3  1.5819462 0.0276923  1.5276693</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        CI.up unadj.p.value adj.p.value   sig_ind</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;numeric&gt;     &lt;numeric&gt;   &lt;numeric&gt; &lt;logical&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.0547490     0.6623657     1.00000     FALSE</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 -0.0174399     0.0159084     0.20252     FALSE</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  1.6362230     0.0000000     0.00000      TRUE</span></span></code></pre></div>
+<p>The regression coefficients and their 95% confidence intervals are
+provided. These coefficients correspond to <span class="math inline">\(\alpha^k\)</span> in the model equation, and can
+be interpreted as the associations between the covariates and log-ratio
+of <code>&quot;rawCount5&quot;</code> over <code>&quot;rawCount10&quot;</code>.</p>
+<p>The results show that the log-ratio is associated with
+<code>&quot;x1&quot;</code> and <code>&quot;x3&quot;</code> before adjusting for multiple
+testing. The interpretation is:</p>
+<ul>
+<li>Every unit increase in <code>&quot;x1&quot;</code> is associated with
+approximately 1.00% increase in the abundance ratio of
+<code>&quot;rawCount5&quot;</code> over <code>&quot;rawCount10&quot;</code> (while
+controlling for <code>&quot;x2&quot;</code> and <code>&quot;x3&quot;</code>), but this is
+not significant after adjusting for multiple testing; Every unit
+increase in <code>&quot;x3&quot;</code> is associated with approximately 386.4%
+(=exp(1.582)-1) increase in the abundance ratio of
+<code>&quot;rawCount5&quot;</code> over <code>&quot;rawCount10&quot;</code> (while
+controlling for <code>&quot;x1&quot;</code> and <code>&quot;x2&quot;</code>), and this
+association remains significant after adjusting for multiple
+testing.</li>
+</ul>
+<p>To extract the significant associations for all ratios with
+<code>&quot;rawCount10&quot;</code> being the denominator, one can do:
+<code>subset(summary_res,sig_ind==TRUE)</code>.</p>
+</div>
+<div id="reference-1" class="section level2">
+<h2>Reference</h2>
+<p>Li et al.(2018) Conditional Regression Based on a Multivariate
+Zero-Inflated Logistic-Normal Model for Microbiome Relative Abundance
+Data. Statistics in Biosciences 10(3): 587-608</p>
+<p>Session Info</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; R version 4.2.1 (2022-06-23 ucrt)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Running under: Windows 10 x64 (build 19044)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] LC_COLLATE=C                          </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] IFAA_1.0.8</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] Rcpp_1.0.9                  mvtnorm_1.1-3              </span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [3] lattice_0.20-45             class_7.3-20               </span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] glmnet_4.1-4                digest_0.6.29              </span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] RhpcBLASctl_0.21-247.1      foreach_1.5.2              </span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] parallelly_1.32.1           slam_0.1-50                </span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] R6_2.5.1                    GenomeInfoDb_1.32.3        </span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] cellranger_1.1.0            stats4_4.2.1               </span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [15] evaluate_0.16               rootSolve_1.8.2.3          </span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [17] e1071_1.7-11                httr_1.4.4                 </span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [19] zlibbioc_1.42.0             rlang_1.0.4                </span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [21] Exact_3.1                   readxl_1.4.1               </span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [23] rstudioapi_0.14             data.table_1.14.2          </span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [25] jquerylib_0.1.4             S4Vectors_0.34.0           </span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [27] Matrix_1.4-1                rmarkdown_2.16             </span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [29] mathjaxr_1.6-0              splines_4.2.1              </span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [31] stringr_1.4.1               RCurl_1.98-1.8             </span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [33] DelayedArray_0.22.0         proxy_0.4-27               </span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [35] compiler_4.2.1              xfun_0.32                  </span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [37] BiocGenerics_0.42.0         shape_1.4.6                </span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [39] DescTools_0.99.45           htmltools_0.5.3            </span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [41] SummarizedExperiment_1.26.1 lmom_2.9                   </span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [43] GenomeInfoDbData_1.2.8      MatrixExtra_0.1.12         </span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [45] expm_0.999-6                IRanges_2.30.1             </span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [47] codetools_0.2-18            matrixStats_0.62.0         </span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [49] MASS_7.3-58.1               bitops_1.0-7               </span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [51] grid_4.2.1                  jsonlite_1.8.0             </span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [53] magrittr_2.0.1              gld_2.6.5                  </span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [55] cli_3.3.0                   stringi_1.7.8              </span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [57] cachem_1.0.6                XVector_0.36.0             </span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [59] doRNG_1.8.2                 doParallel_1.0.17          </span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [61] bslib_0.4.0                 boot_1.3-28                </span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [63] HDCI_1.0-2                  iterators_1.0.14           </span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [65] tools_4.2.1                 float_0.3-0                </span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [67] Biobase_2.56.0              rngtools_1.5.2             </span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [69] MatrixGenerics_1.8.1        parallel_4.2.1             </span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [71] fastmap_1.1.0               survival_3.4-0             </span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [73] yaml_2.3.5                  GenomicRanges_1.48.0       </span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [75] knitr_1.40                  sass_0.4.2</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

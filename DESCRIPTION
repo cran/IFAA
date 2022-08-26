@@ -1,6 +1,6 @@
 Package: IFAA
 Title: Robust Inference for Absolute Abundance in Microbiome Analysis
-Version: 1.0.7
+Version: 1.0.8
 Authors@R: c(person(given = "Quran",
            family = "Wu",
            role = c("aut"),
@@ -16,22 +16,19 @@ Encoding: UTF-8
 URL: https://pubmed.ncbi.nlm.nih.gov/35241863/,
         https://pubmed.ncbi.nlm.nih.gov/30923584/,
         https://github.com/gitlzg/IFAA
-LazyData: FALSE
 RoxygenNote: 7.2.0
 Depends: R (>= 4.1.0),
-Imports: qlcMatrix (>= 0.9.7), methods (>= 3.3.0), mathjaxr (>= 1.0-1),
-        foreach (>= 1.4.3), Matrix (>= 1.4-0), HDCI (>= 1.0-2),
-        parallel (>= 3.3.0), doParallel (>= 1.0.11), parallelly ,
+Imports: mathjaxr (>= 1.0-1),foreach (>= 1.4.3), Matrix (>= 1.4-0),
+        parallel (>= 3.3.0), doParallel (>= 1.0.11), doRNG, parallelly,
         glmnet, stats, utils, SummarizedExperiment, stringr, S4Vectors,
-        DescTools, MatrixExtra, speedglm
-biocViews: Software, Technology, Sequencing, Microbiome, Regression
+        DescTools, MatrixExtra, HDCI (>= 1.0-2)
 RdMacros: mathjaxr
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-07-07 20:28:02 UTC; 16037
 Author: Quran Wu [aut],
   Zhigang Li [aut, cre]
 Maintainer: Zhigang Li <zhigang.li@ufl.edu>
+Packaged: 2022-08-26 21:09:35 UTC; phhp-la-zhigang.li
 Repository: CRAN
-Date/Publication: 2022-07-07 20:50:02 UTC
+Date/Publication: 2022-08-26 21:34:42 UTC
