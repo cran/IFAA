@@ -144,7 +144,7 @@
 ##' @importFrom doParallel registerDoParallel
 ##' @importFrom Matrix Diagonal Matrix sparseVector
 ##' @importFrom glmnet glmnet
-##' @importFrom HDCI bootLOPR
+##' @importFrom methods is
 ##' @import mathjaxr
 ##' @import stats
 ##' @import utils
@@ -153,6 +153,7 @@
 ##' @importFrom S4Vectors DataFrame
 ##' @importFrom DescTools DoCall
 ##' @importFrom MatrixExtra tcrossprod crossprod rbind_csr as.csc.matrix
+##' @importFrom HDCI bootLOPR
 ##' @export
 ##' @md
 

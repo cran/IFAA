@@ -61,8 +61,6 @@ dataC_sub<-data_merged[,colnames(dataC)]
 test_dat<-SummarizedExperiment::SummarizedExperiment(
 assays=list(MicrobData=t(dataM_sub)), colData=dataC_sub)
 
-## Create a SummarizedExperiment object 
-test_dat<-SummarizedExperiment::SummarizedExperiment(assays=list(MicrobData=t(dataM_sub)), colData=dataC_sub)
 
 ## ---- eval=T------------------------------------------------------------------
 set.seed(123) # For full reproducibility
